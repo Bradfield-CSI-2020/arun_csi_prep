@@ -1,0 +1,22 @@
+{
+  "name": "bradfield_csi_2020",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sum_first_n.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arunsivasankaran/bradfield_csi_2020.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arunsivasankaran/bradfield_csi_2020/issues"
+  },
+  "homepage": "https://github.com/arunsivasankaran/bradfield_csi_2020#readme",
+  "dependencies": {
+    "faker": "^4.1.0"
+  }
+}
