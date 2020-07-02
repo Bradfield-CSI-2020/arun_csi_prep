@@ -11,6 +11,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	// "strconv"
+	"io/ioutil"
+	"net/http"
 )
 
 /*
@@ -18,23 +21,26 @@ import (
 	1. usage: xkcd --index
 		- fetch and build an index of all comics available on xkcd?
 	2. usage: xkcd 'donald trump'
-
 */
 func main() {
 	parseArgs()
+	fetch("1")
 }
 
-func parseArgs() {
-	// var s string = ""
-	// var sep string = ""
+func parseArgs() string {
+	var search = os.Args[1]
+	return search
+}
 
-	// for i := 0; i < len(os.Args); i++ {
-	// 	s += os.Args[i] + "," 
-	// }
+func fetch(num string) string {
+	var slice = [3] string {"https://xkcd.com/", num, "/info.0.json"}
+	var url = strings.Join(slice[0:], "")
 
-	// fmt.Println(s)
-
-	fmt.Println(strings.Join(os.Args[0:], " "))
+	resp, _ := http.Get(url)
+	body, _ := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+	fmt.Printf("%s", body)
+	return string(body)
 }
 
 
