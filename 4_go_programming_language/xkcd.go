@@ -17,12 +17,6 @@ import (
 	"time"
 )
 
-/*
-	Design consideration
-	1. usage: xkcd --index
-		- fetch and build an index of all comics available on xkcd?
-	2. usage: xkcd 'donald trump'
-*/
 func main() {
 	var arg = parseArgs()
 	if arg == "--index" {
@@ -43,8 +37,6 @@ func parseArgs() string {
 
 	var searchTerm = os.Args[1]
 	return searchTerm
-
-	
 }
 
 func scrapeXkcd() {
@@ -100,6 +92,5 @@ func readFile() string {
 
 	return string(data)
 }
-
 
 // todo: write an index file that has a init function that creates the in-memory index of comics?
