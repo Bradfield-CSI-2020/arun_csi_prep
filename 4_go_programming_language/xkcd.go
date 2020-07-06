@@ -54,6 +54,7 @@ func parseArgs() string {
 func scrapeXkcd() {
 	for i := 1; i <= 2328; i++ {
 		// comic number 404 does not exist
+		// todo: check if file exists and then quit?
 		if (i != 404) {
 			time.Sleep(100 * time.Millisecond)
 			comic := fetch(strconv.Itoa(i))
@@ -79,6 +80,13 @@ func write(line string) {
 	
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "xkcd:write:open %v\n", err)
+		newFile, err := os.Create("./db.jsonl")
+
+		if (err != nil) {
+			fmt.Fprintf(os.Stderr, "buildIndex:create %v\n", err)
+		}
+
+		file = newFile
 	}
 
 	done, err := file.WriteString(line + "\n")
