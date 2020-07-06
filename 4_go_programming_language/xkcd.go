@@ -14,6 +14,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 /*
@@ -23,20 +24,37 @@ import (
 	2. usage: xkcd 'donald trump'
 */
 func main() {
-	// fmt.Println(parseArgs())
-	// fmt.Println(fetch("1"))
-	indexXkcd()
-	// fmt.Println(readFile())
+	var arg = parseArgs()
+	if arg == "--index" {
+		// todo: use flags so index can be used as a search term
+		scrapeXkcd()
+		os.Exit(0)
+	} 
+
+	fmt.Println(arg)
 }
 
 func parseArgs() string {
-	var search = os.Args[1]
-	return search
+	if (len(os.Args) != 2) {
+		err := fmt.Errorf("Invalid number of args")
+		fmt.Fprintf(os.Stderr, "xkcd:parseArgs %v\n", err)
+		os.Exit(1)
+	}
+
+	var searchTerm = os.Args[1]
+	return searchTerm
+
+	
 }
 
-func indexXkcd() {
-	for i := 1; i < 10; i++ {
-		fmt.Println(fetch(strconv.Itoa(i)))
+func scrapeXkcd() {
+	for i := 1; i <= 2328; i++ {
+		// comic number 404 does not exist
+		if (i != 404) {
+			time.Sleep(100 * time.Millisecond)
+			comic := fetch(strconv.Itoa(i))
+			write(comic)
+		}
 	}
 }
 
@@ -49,6 +67,26 @@ func fetch(num string) string {
 	resp.Body.Close()
 	// fmt.Printf("%s", body)
 	return string(body)
+}
+
+func write(line string) {
+	// todo: calculate path via __dirname eq?	
+	fileName := "db.jsonl"
+	file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_APPEND, os.ModeAppend)
+	
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "write:open: %v\n", err)
+	}
+
+	done, err := file.WriteString(line + "\n")
+	
+	fmt.Println("write result: " + strconv.Itoa(done))
+
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "write:write %v\n", err)
+	}
+
+	file.Sync()
 }
 
 func readFile() string {
