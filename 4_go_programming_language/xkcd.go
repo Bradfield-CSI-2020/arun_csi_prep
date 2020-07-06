@@ -27,7 +27,9 @@ func main() {
 		os.Exit(0)
 	} 
 
-	buildIndex()
+	index := buildIndex()
+
+	fmt.Println(index[1].SafeTitle)
 }
 
 func parseArgs() string {
@@ -82,7 +84,9 @@ func write(line string) {
 	file.Sync()
 }
 
-func buildIndex() {
+
+
+func buildIndex() map[int]comic {
 	fileName := "db.jsonl"
 
 	data, err := ioutil.ReadFile(fileName)
@@ -91,14 +95,19 @@ func buildIndex() {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
 
-	for count, line:= range strings.Split(string(data), "\n") {
-		fmt.Println(line)
-		fmt.Println(count)
+	var index = make(map[int]comic)
+
+	for _, line:= range strings.Split(string(data), "\n") {
+		// fmt.Println(line)
+		// fmt.Println(count)
 		comicLine := comic{}
 		json.Unmarshal([]byte(line), &comicLine)
-		fmt.Println(comicLine.Month, ",", comicLine.Day)
-		fmt.Println(comicLine.Alt)
+		// fmt.Println(comicLine.Month, ",", comicLine.Day)
+		// fmt.Println(comicLine.Alt)
+		index[comicLine.Num] = comicLine
 	}
+
+	return index
 }
 
 // {
