@@ -27,7 +27,6 @@ func main() {
 		os.Exit(0)
 	} 
 
-	// fmt.Println(arg)
 	buildIndex()
 }
 
@@ -60,7 +59,6 @@ func fetch(num string) string {
 	resp, _ := http.Get(url)
 	body, _ := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
-	// fmt.Printf("%s", body)
 	return string(body)
 }
 
