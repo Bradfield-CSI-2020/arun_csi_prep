@@ -22,9 +22,9 @@ import (
 	2. usage: xkcd 'donald trump'
 */
 func main() {
-	parseArgs()
-	fetch("1")
-	fmt.Println(readFile())
+	fmt.Println(parseArgs())
+	// fetch("1")
+	// fmt.Println(readFile())
 }
 
 func parseArgs() string {
