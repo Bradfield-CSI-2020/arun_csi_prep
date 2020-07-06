@@ -13,6 +13,7 @@ import (
 	"strings"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 /*
@@ -22,14 +23,21 @@ import (
 	2. usage: xkcd 'donald trump'
 */
 func main() {
-	fmt.Println(parseArgs())
-	// fetch("1")
+	// fmt.Println(parseArgs())
+	// fmt.Println(fetch("1"))
+	indexXkcd()
 	// fmt.Println(readFile())
 }
 
 func parseArgs() string {
 	var search = os.Args[1]
 	return search
+}
+
+func indexXkcd() {
+	for i := 1; i < 10; i++ {
+		fmt.Println(fetch(strconv.Itoa(i)))
+	}
 }
 
 func fetch(num string) string {
@@ -39,7 +47,7 @@ func fetch(num string) string {
 	resp, _ := http.Get(url)
 	body, _ := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
-	fmt.Printf("%s", body)
+	// fmt.Printf("%s", body)
 	return string(body)
 }
 
@@ -55,3 +63,5 @@ func readFile() string {
 	return string(data)
 }
 
+
+// todo: write an index file that has a init function that creates the in-memory index of comics?
