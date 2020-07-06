@@ -29,7 +29,17 @@ func main() {
 
 	index := buildIndex()
 
-	fmt.Println(index[1].SafeTitle)
+	for key, value := range index {
+		if (strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(arg))) {
+			fmt.Println("Found match for key:", key)
+			// https://xkcd.com/1/
+			var url = "https://xkcd.com/" + strconv.Itoa(value.Num)
+			fmt.Println("Url:", url)
+			fmt.Println("Transcript", value.Transcript)
+			fmt.Println("-------------------------------------")
+		}
+	}
+	
 }
 
 func parseArgs() string {
