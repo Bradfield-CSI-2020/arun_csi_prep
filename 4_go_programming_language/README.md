@@ -15,6 +15,9 @@ go build -o bin/xkcd
 
 ### Scrape XKCD
 
+The db file is already in the repo, so NO need to do this.
+This takes a while to run.
+
 ```
 bin/xkcd --index
 ```
