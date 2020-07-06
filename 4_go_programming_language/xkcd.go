@@ -22,24 +22,22 @@ import (
 func main() {
 	var arg = parseArgs()
 	if arg == "--index" {
-		// todo: use flags so index can be used as a search term
 		scrapeXkcd()
 		os.Exit(0)
 	} 
 
 	index := buildIndex()
 
-	for key, value := range index {
+	for _, value := range index {
+		// todo: check all relevant keys for match
 		if (strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(arg))) {
-			fmt.Println("Found match for key:", key)
-			// https://xkcd.com/1/
+			// url should look like this -> https://xkcd.com/1/
 			var url = "https://xkcd.com/" + strconv.Itoa(value.Num)
 			fmt.Println("Url:", url)
-			fmt.Println("Transcript", value.Transcript)
+			fmt.Println("Transcript:", value.Transcript)
 			fmt.Println("-------------------------------------")
 		}
 	}
-	
 }
 
 func parseArgs() string {
@@ -80,7 +78,7 @@ func write(line string) {
 	file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_APPEND, os.ModeAppend)
 	
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "write:open: %v\n", err)
+		fmt.Fprintf(os.Stderr, "xkcd:write:open %v\n", err)
 	}
 
 	done, err := file.WriteString(line + "\n")
@@ -88,7 +86,7 @@ func write(line string) {
 	fmt.Println("write result: " + strconv.Itoa(done))
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "write:write %v\n", err)
+		fmt.Fprintf(os.Stderr, "xkcd:write:write %v\n", err)
 	}
 
 	file.Sync()
@@ -102,18 +100,14 @@ func buildIndex() map[int]comic {
 	data, err := ioutil.ReadFile(fileName)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		fmt.Fprintf(os.Stderr, "buildIndex:read %v\n", err)
 	}
 
 	var index = make(map[int]comic)
 
 	for _, line:= range strings.Split(string(data), "\n") {
-		// fmt.Println(line)
-		// fmt.Println(count)
 		comicLine := comic{}
 		json.Unmarshal([]byte(line), &comicLine)
-		// fmt.Println(comicLine.Month, ",", comicLine.Day)
-		// fmt.Println(comicLine.Alt)
 		index[comicLine.Num] = comicLine
 	}
 
