@@ -6,6 +6,7 @@
 // provided on the command line
 package main
 
+// todo: write an index file that has a init function that creates the in-memory index of comics?
 
 import (
 	"fmt"
@@ -15,6 +16,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"encoding/json"
 )
 
 func main() {
@@ -25,7 +27,8 @@ func main() {
 		os.Exit(0)
 	} 
 
-	fmt.Println(arg)
+	// fmt.Println(arg)
+	buildIndex()
 }
 
 func parseArgs() string {
@@ -81,7 +84,7 @@ func write(line string) {
 	file.Sync()
 }
 
-func readFile() string {
+func buildIndex() {
 	fileName := "db.jsonl"
 
 	data, err := ioutil.ReadFile(fileName)
@@ -90,7 +93,40 @@ func readFile() string {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
 
-	return string(data)
+	for count, line:= range strings.Split(string(data), "\n") {
+		fmt.Println(line)
+		fmt.Println(count)
+		comicLine := comic{}
+		json.Unmarshal([]byte(line), &comicLine)
+		fmt.Println(comicLine.Month, ",", comicLine.Day)
+		fmt.Println(comicLine.Alt)
+	}
 }
 
-// todo: write an index file that has a init function that creates the in-memory index of comics?
+// {
+//   "month": "7",
+//   "num": 2328,
+//   "link": "",
+//   "year": "2020",
+//   "news": "",
+//   "safe_title": "Space Basketball",
+//   "transcript": "",
+//   "alt": "My shooting will improve over the short term, but over the long term the universe will take more shots.",
+//   "img": "https://imgs.xkcd.com/comics/space_basketball.png",
+//   "title": "Space Basketball",
+//   "day": "3"
+// }
+
+type comic struct {
+	Month string `json:"month"`
+	Num int `json:"num"`
+	Day string `json:"day"`
+	Link string `json:"link"`
+	Year string `json:"year"`
+	News string `json:"news"`
+	SafeTitle string `json:"safe_title"`
+	Transcript string `json:"transcript"`
+	Alt string `json:"alt"`
+	Img string `json:"img"`
+	Title string `json:"title"`
+}
