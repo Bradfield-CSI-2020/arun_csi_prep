@@ -27,7 +27,11 @@ func main() {
 		os.Exit(0)
 	} 
 
-	index, _ := buildIndex()
+	index, err := buildIndex()
+
+	if (err != nil) {
+		log.Fatalf("xkcd:main %v\n", err)
+	}
 
 	for _, value := range index {
 		// todo: check all relevant keys for match
