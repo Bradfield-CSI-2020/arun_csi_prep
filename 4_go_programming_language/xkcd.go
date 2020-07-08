@@ -21,7 +21,7 @@ import (
 )
 
 func main() {
-	var arg = parseArgs()
+	arg := parseArgs()
 	if arg == "--index" {
 		scrapeXkcd()
 		os.Exit(0)
@@ -76,8 +76,8 @@ func scrapeXkcd() {
 }
 
 func fetch(num string) (string, error) {
-	var slice = [3] string {"https://xkcd.com/", num, "/info.0.json"}
-	var url = strings.Join(slice[0:], "")
+	slice := [3] string {"https://xkcd.com/", num, "/info.0.json"}
+	url := strings.Join(slice[0:], "")
 
 	resp, reqError := http.Get(url)
 
