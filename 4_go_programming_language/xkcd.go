@@ -17,6 +17,7 @@ import (
 	"strconv"
 	"time"
 	"encoding/json"
+	"log"
 )
 
 func main() {
@@ -26,13 +27,16 @@ func main() {
 		os.Exit(0)
 	} 
 
-	index := buildIndex()
+	index, _ := buildIndex()
 
 	for _, value := range index {
 		// todo: check all relevant keys for match
-		if (strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(arg))) {
+		safeTitleHits := strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(arg))
+		transcriptHits := strings.Contains(strings.ToLower(value.Transcript), strings.ToLower(arg))
+
+		if (safeTitleHits || transcriptHits) {
 			// url should look like this -> https://xkcd.com/1/
-			var url = "https://xkcd.com/" + strconv.Itoa(value.Num)
+			url := "https://xkcd.com/" + strconv.Itoa(value.Num)
 			fmt.Println("Url:", url)
 			fmt.Println("Transcript:", value.Transcript)
 			fmt.Println("-------------------------------------")
@@ -42,73 +46,91 @@ func main() {
 
 func parseArgs() string {
 	if (len(os.Args) != 2) {
-		err := fmt.Errorf("Invalid number of args")
-		fmt.Fprintf(os.Stderr, "xkcd:parseArgs %v\n", err)
-		os.Exit(1)
+		log.Fatalf("xkcd:parseArgs %v\n", fmt.Errorf("Invalid number of args"))
 	}
 
-	var searchTerm = os.Args[1]
-	return searchTerm
+	return os.Args[1]
 }
 
 func scrapeXkcd() {
 	for i := 1; i <= 2328; i++ {
 		// comic number 404 does not exist
-		// todo: check if file exists and then quit?
 		if (i != 404) {
-			time.Sleep(100 * time.Millisecond)
-			comic := fetch(strconv.Itoa(i))
-			write(comic)
+			continue
+		}
+		
+		time.Sleep(100 * time.Millisecond)
+
+		comic, fetchErr := fetch(strconv.Itoa(i))
+
+		if (fetchErr != nil) {
+			log.Fatalf("xkcd:scrapeXkcd:fetch %v\n", fetchErr)
+		}
+
+		writeErr := write(comic)
+
+		if (writeErr != nil) {
+			log.Fatalf("xkcd:scrapeXkcd:write %v\n", writeErr)
 		}
 	}
 }
 
-func fetch(num string) string {
+func fetch(num string) (string, error) {
 	var slice = [3] string {"https://xkcd.com/", num, "/info.0.json"}
 	var url = strings.Join(slice[0:], "")
 
-	resp, _ := http.Get(url)
-	body, _ := ioutil.ReadAll(resp.Body)
+	resp, reqError := http.Get(url)
+
+	if (reqError != nil) {
+		return "", reqError
+	}
+
+	body, readErr := ioutil.ReadAll(resp.Body)
+
 	resp.Body.Close()
-	return string(body)
+
+	if (readErr != nil) {
+		return "", readErr
+	}
+
+	return string(body), nil
 }
 
-func write(line string) {
-	// todo: calculate path via __dirname eq?	
+func write(line string) error {
 	fileName := "db.jsonl"
-	file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_APPEND, os.ModeAppend)
+	file, openErr := os.OpenFile(fileName, os.O_WRONLY|os.O_APPEND, os.ModeAppend)
 	
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "xkcd:write:open %v\n", err)
+	if openErr != nil {
+		fmt.Fprintf(os.Stderr, "xkcd:write:open %v\n", openErr)
 		newFile, err := os.Create("./db.jsonl")
 
 		if (err != nil) {
-			fmt.Fprintf(os.Stderr, "buildIndex:create %v\n", err)
+			return err
 		}
 
 		file = newFile
 	}
 
-	done, err := file.WriteString(line + "\n")
+	_, writeErr := file.WriteString(line + "\n")
 	
-	fmt.Println("write result: " + strconv.Itoa(done))
-
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "xkcd:write:write %v\n", err)
+	if writeErr != nil {
+		fmt.Fprintf(os.Stderr, "xkcd:write:write %v\n", writeErr)
+		return writeErr
 	}
 
-	file.Sync()
+	syncErr := file.Sync()
+
+	return syncErr
 }
 
-
-
-func buildIndex() map[int]comic {
+func buildIndex() (map[int]comic, error) {
 	fileName := "db.jsonl"
 
 	data, err := ioutil.ReadFile(fileName)
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "buildIndex:read %v\n", err)
+		return nil, err
 	}
 
 	var index = make(map[int]comic)
@@ -119,22 +141,8 @@ func buildIndex() map[int]comic {
 		index[comicLine.Num] = comicLine
 	}
 
-	return index
+	return index, nil
 }
-
-// {
-//   "month": "7",
-//   "num": 2328,
-//   "link": "",
-//   "year": "2020",
-//   "news": "",
-//   "safe_title": "Space Basketball",
-//   "transcript": "",
-//   "alt": "My shooting will improve over the short term, but over the long term the universe will take more shots.",
-//   "img": "https://imgs.xkcd.com/comics/space_basketball.png",
-//   "title": "Space Basketball",
-//   "day": "3"
-// }
 
 type comic struct {
 	Month string `json:"month"`
