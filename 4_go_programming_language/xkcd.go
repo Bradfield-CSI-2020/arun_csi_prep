@@ -85,12 +85,12 @@ func testInvertedIndex(searchTerm string, invertedIndex map[string]*invertedInde
 	hits := invertedIndex[strings.ToLower(searchTerm)]
 	if (hits == nil) {
 		fmt.Println("no hits !!")
-	}
+	} else {
+		foundComics := hits.Comics
 
-	foundComics := hits.Comic
-
-	for _, value := range foundComics {
-		printComic(value)
+		for _, value := range foundComics {
+			printComic(value)
+		}
 	}
 }
 
@@ -235,13 +235,13 @@ func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
 			if (existingEntry == nil) {
 				entry := invertedIndexEntry{}
 				entry.SearchTerm = searchValue
-				entry.Comic = make(map[int]comic)
-				entry.Comic[comicLine.Num] = comicLine
+				entry.Comics = make(map[int]comic)
+				entry.Comics[comicLine.Num] = comicLine
 				entry.Frequency = 1
 				invertedIndex[searchValue] = &entry
 			} else {
 				existingEntry.Frequency++
-				existingEntry.Comic[comicLine.Num] = comicLine
+				existingEntry.Comics[comicLine.Num] = comicLine
 				// no need to update invertedIndex, as we update the entry directly
 			}
 		}
@@ -253,7 +253,7 @@ func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
 type invertedIndexEntry struct {
 	SearchTerm string
 	Frequency int
-	Comic map[int]comic
+	Comics map[int]comic
 }
 type invertedIndex struct {
 	HashMap map[string]*invertedIndexEntry
