@@ -20,3 +20,15 @@ complete -F _wiki_completions wiki
 # }
 
 # complete -F _wiki_completions wiki
+
+
+
+# Get search hits
+# url="https://en.wikipedia.org/w/api.php?action=opensearch&search=${title}&limit=3&namespace=0&format=json"
+# echo "$url"
+# result=$(curl -s -X GET ${url} | jq -r '.[1] | map(sub(" "; "_")) | join(" ")')
+
+# arr=($result)
+
+# for i in ${arr[@]}; do echo $i; done
+# todo: use jq map to replace space with string
