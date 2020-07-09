@@ -50,7 +50,6 @@ func main() {
 
 func printHits(searchTerm string, searchIndex map[int]comic) {
 		for _, value := range searchIndex {
-		// todo: check all relevant keys for match
 		safeTitleHits := strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(searchTerm))
 		transcriptHits := strings.Contains(strings.ToLower(value.Transcript), strings.ToLower(searchTerm))
 
