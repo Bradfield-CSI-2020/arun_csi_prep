@@ -49,7 +49,6 @@ if [ $# -eq 2 ]
     # the section details can be found by looking for the first <p>
     # we can then look for the first ". " ? maybe...
     # but we need to strip all html in there
-
     url="https://en.wikipedia.org/w/api.php?action=parse&format=json&page=${title}&prop=sections&disabletoc=1"
     response=$(curl -s -X GET ${url})
     # sections=$(echo "${response}" | jq -r '.parse.sections | .[] | select(.toclevel == 1) | .line')
@@ -58,23 +57,29 @@ if [ $# -eq 2 ]
     # todo: use global substitution to replace spaces
     # | gsub(" "; "_")
     
-    # printf '%s\n' "${sections[@]}"
-
-    # declare -p sections | grep -q '^declare \-a' && echo array || echo no array
-
     for i in "${!sections[@]}"; do
       if [[ "${sections[$i]}" = "${section_title}" ]]; then
-        # echo "${sections[$i]}"
-        # echo "Section index is";
         index=$((i+1))
-        # echo "${index}";
         echo ""
         echo "${sections[$i]}:"
         echo ""
-        section_detail_url="https://en.wikipedia.org/w/api.php?action=parse&format=json&page=${index}&prop=text&section=1&disabletoc=1"
+        section_detail_url="https://en.wikipedia.org/w/api.php?action=parse&format=json&page=${title}&prop=text&section=${index}&disabletoc=1"
         response=$(curl -s -X GET "${section_detail_url}")
         detail=$(echo "${response}" | jq '.parse.text."*"')
-        echo "${detail}"
+        
+        # NICE: this works
+        echo "${detail//\\}" | \
+        gsed -n 's:.*<p>\(.*\)</p>.*:\1:p' | \
+        gsed -e 's/<[^>]*>//g' | \
+        sed 's/&#160;//g' | \
+        sed 's/&#91;//g' | \
+        sed 's/2&#93;//g'
+        # printf '&#nbsp;\n' | sed 's/2&#93;/X/g'
+        # printf '&#160;\n'  | sed 's/&160;/X/g'
+        # printf '&#xA0;\n'  | sed 's/&[aA]0;/X/g'
+
+        # ;n
+        # X2&#93;n
       fi
     done
 
