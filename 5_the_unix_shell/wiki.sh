@@ -25,7 +25,7 @@ summary=$(curl -s -X GET "${summary_url}" | jq '.extract')
 echo ""
 echo "Summary:"
 echo ""
-echo "${summary}"
+echo "${summary}" | lynx -stdin -dump
 
 if [ $# -eq 1 ]
   then
@@ -71,15 +71,11 @@ if [ $# -eq 2 ]
         echo "${detail//\\}" | \
         gsed -n 's:.*<p>\(.*\)</p>.*:\1:p' | \
         gsed -e 's/<[^>]*>//g' | \
-        sed 's/&#160;//g' | \
-        sed 's/&#91;//g' | \
-        sed 's/2&#93;//g'
-        # printf '&#nbsp;\n' | sed 's/2&#93;/X/g'
-        # printf '&#160;\n'  | sed 's/&160;/X/g'
-        # printf '&#xA0;\n'  | sed 's/&[aA]0;/X/g'
-
-        # ;n
-        # X2&#93;n
+        lynx -stdin -dump
+        # or use the following
+        # sed 's/&#160;//g' | \
+        # sed 's/&#91;//g' | \
+        # sed 's/2&#93;//g'
       fi
     done
 
