@@ -36,3 +36,12 @@ bin/xkcd space
 ```
 bin/xkcd "space elevators"
 ```
+
+
+### Open Repl
+
+```
+bin/xkcd
+```
+
+Calling the executable without an arg will open a repl that can use used for many look ups
