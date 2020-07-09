@@ -62,6 +62,7 @@ func printComic(value comic) {
 	fmt.Println("-------------------------------------")
 }
 
+// not used, keeping for future benchmarking
 func printHits(searchTerm string, searchIndex map[int]comic) {
 	count := 0
 	for _, value := range searchIndex {
@@ -76,6 +77,10 @@ func printHits(searchTerm string, searchIndex map[int]comic) {
 	fmt.Println("count original:", count)
 }
 
+// only checks for exact (but caseinsensitive) matches:
+// 'space' will match 'Space', 'spAce', 'SPACE' --
+// -- but will not match 'Myspace'
+// todo: match substrings too
 func testInvertedIndex(searchTerm string, invertedIndex map[string]*invertedIndexEntry) {
 	hits := invertedIndex[strings.ToLower(searchTerm)]
 	if (hits == nil) {
