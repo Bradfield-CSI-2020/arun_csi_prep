@@ -18,6 +18,7 @@ import (
 	"time"
 	"encoding/json"
 	"log"
+	_ "bufio"
 )
 
 func main() {
@@ -33,10 +34,21 @@ func main() {
 		log.Fatalf("xkcd:main %v\n", err)
 	}
 
-	for _, value := range index {
+	printHits(arg, index)
+
+	// newInput := bufio.NewScanner(os.Stdin)
+
+	// for newInput.Scan() {
+	// 	fmt.Println("input:", newInput.Text())
+	// }
+}
+
+
+func printHits(searchTerm string, searchIndex map[int]comic) {
+		for _, value := range searchIndex {
 		// todo: check all relevant keys for match
-		safeTitleHits := strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(arg))
-		transcriptHits := strings.Contains(strings.ToLower(value.Transcript), strings.ToLower(arg))
+		safeTitleHits := strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(searchTerm))
+		transcriptHits := strings.Contains(strings.ToLower(value.Transcript), strings.ToLower(searchTerm))
 
 		if (safeTitleHits || transcriptHits) {
 			// url should look like this -> https://xkcd.com/1/
