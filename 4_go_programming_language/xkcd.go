@@ -28,12 +28,6 @@ func main() {
 		os.Exit(0)
 	} 
 
-	// index, err := buildIndex()
-
-	// if (err != nil) {
-	// 	log.Fatalf("xkcd:main %v\n", err)
-	// }
-
 	invertedIndex, err := buildInvertedIndex()
 	
 	if (err != nil) {
@@ -42,8 +36,6 @@ func main() {
 	
 	if (arg != "") {
 		testInvertedIndex(arg, invertedIndex)
-		// printHits(arg, index)
-
 	}
 
 	newInput := bufio.NewScanner(os.Stdin)
