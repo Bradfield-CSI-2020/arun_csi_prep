@@ -202,7 +202,7 @@ func buildIndex() (map[int]comic, error) {
 }
 
 func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
-		fileName := "db.jsonl"
+	fileName := "db.jsonl"
 
 	data, err := ioutil.ReadFile(fileName)
 
