@@ -62,21 +62,6 @@ func printComic(value comic) {
 	fmt.Println("-------------------------------------")
 }
 
-// not used, keeping for future benchmarking
-func printHits(searchTerm string, searchIndex map[int]comic) {
-	count := 0
-	for _, value := range searchIndex {
-		safeTitleHits := strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(searchTerm))
-		transcriptHits := strings.Contains(strings.ToLower(value.Transcript), strings.ToLower(searchTerm))
-		
-		if (safeTitleHits || transcriptHits) {
-			count++
-			printComic(value)
-		}
-	}
-	fmt.Println("count original:", count)
-}
-
 // only checks for exact (but caseinsensitive) matches:
 // 'space' will match 'Space', 'spAce', 'SPACE' --
 // -- but will not match 'Myspace'
@@ -177,29 +162,6 @@ func write(line string) error {
 	return syncErr
 }
 
-func buildIndex() (map[int]comic, error) {
-	fileName := "db.jsonl"
-
-	data, err := ioutil.ReadFile(fileName)
-
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "buildIndex:read %v\n", err)
-		return nil, err
-	}
-
-	var index = make(map[int]comic)
-
-	lineCount := 0
-	for _, line:= range strings.Split(string(data), "\n") {
-		lineCount++
-		comicLine := comic{}
-		json.Unmarshal([]byte(line), &comicLine)
-		index[comicLine.Num] = comicLine
-	}
-	fmt.Println("original line count:", lineCount)
-	return index, nil
-}
-
 func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
 	fileName := "db.jsonl"
 
@@ -210,7 +172,7 @@ func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
 		return nil, err
 	}
 
-	var invertedIndex = make(map[string]*invertedIndexEntry)
+	invertedIndex := make(map[string]*invertedIndexEntry)
 
 	for _, line:= range strings.Split(string(data), "\n") {
 		// line is a document
@@ -219,7 +181,11 @@ func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
 		// for each string entry, add to invertedIndex
 		// profit
 		comicLine := comic{}
-		json.Unmarshal([]byte(line), &comicLine)
+		jsonReadErr := json.Unmarshal([]byte(line), &comicLine)
+
+		if (jsonReadErr != nil) {
+			return nil, jsonReadErr
+		}
 		
 		// todo: account for searchterms being substrings of fields
 		titleFields := strings.Fields(comicLine.SafeTitle)
@@ -254,9 +220,6 @@ type invertedIndexEntry struct {
 	SearchTerm string
 	Frequency int
 	Comics map[int]comic
-}
-type invertedIndex struct {
-	HashMap map[string]*invertedIndexEntry
 }
 
 type comic struct {
