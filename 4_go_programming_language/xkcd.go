@@ -28,38 +28,70 @@ func main() {
 		os.Exit(0)
 	} 
 
-	index, err := buildIndex()
+	// index, err := buildIndex()
 
+	// if (err != nil) {
+	// 	log.Fatalf("xkcd:main %v\n", err)
+	// }
+
+	invertedIndex, err := buildInvertedIndex()
+	
 	if (err != nil) {
 		log.Fatalf("xkcd:main %v\n", err)
 	}
-
+	
 	if (arg != "") {
-		printHits(arg, index)
+		testInvertedIndex(arg, invertedIndex)
+		// printHits(arg, index)
+
 	}
 
 	newInput := bufio.NewScanner(os.Stdin)
 
 	for newInput.Scan() {
-		if (strings.TrimSpace(newInput.Text()) != "") {
-			printHits(newInput.Text(), index)
+		cleanInput := strings.TrimSpace(newInput.Text())
+		if (cleanInput != "") {
+			testInvertedIndex(cleanInput, invertedIndex)
 		}
 	}
 }
 
-
 func printHits(searchTerm string, searchIndex map[int]comic) {
-		for _, value := range searchIndex {
+	count := 0
+	for _, value := range searchIndex {
 		safeTitleHits := strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(searchTerm))
 		transcriptHits := strings.Contains(strings.ToLower(value.Transcript), strings.ToLower(searchTerm))
-
+		
 		if (safeTitleHits || transcriptHits) {
+			count++
 			// url should look like this -> https://xkcd.com/1/
-			url := "https://xkcd.com/" + strconv.Itoa(value.Num)
+			// url := "https://xkcd.com/" + strconv.Itoa(value.Num)
+			// fmt.Println("Url:", url)
+			// fmt.Println("Transcript:", value.Transcript)
+			// fmt.Println("-------------------------------------")
+		}
+	}
+	fmt.Println("count original:", count)
+}
+
+func testInvertedIndex(searchTerm string, invertedIndex map[string]*invertedIndexEntry) {
+	hits := invertedIndex[strings.ToLower(searchTerm)]
+	if (hits != nil) {
+		fmt.Println("Freq", hits.Frequency)
+		fmt.Println("Term", hits.SearchTerm)
+		fmt.Println("Comics Count", len(hits.Comic))
+
+		foundComics := hits.Comic
+
+		for _, found := range foundComics {
+			url := "https://xkcd.com/" + strconv.Itoa(found.Num)
 			fmt.Println("Url:", url)
-			fmt.Println("Transcript:", value.Transcript)
+			fmt.Println("Transcript:", found.Transcript)
 			fmt.Println("-------------------------------------")
 		}
+
+	} else {
+		fmt.Println("Freq", 0)
 	}
 }
 
@@ -158,13 +190,73 @@ func buildIndex() (map[int]comic, error) {
 
 	var index = make(map[int]comic)
 
+	lineCount := 0
 	for _, line:= range strings.Split(string(data), "\n") {
+		lineCount++
 		comicLine := comic{}
 		json.Unmarshal([]byte(line), &comicLine)
 		index[comicLine.Num] = comicLine
 	}
-
+	fmt.Println("original line count:", lineCount)
 	return index, nil
+}
+
+func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
+		fileName := "db.jsonl"
+
+	data, err := ioutil.ReadFile(fileName)
+
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "buildIndex:read %v\n", err)
+		return nil, err
+	}
+
+	var invertedIndex = make(map[string]*invertedIndexEntry)
+
+	for _, line:= range strings.Split(string(data), "\n") {
+		// line is the document
+		// go over safetitle and transcript, 
+		// lower case, split at whitespace, 
+		// for each string entry, add to invertedIndex
+		// profit
+		comicLine := comic{}
+		json.Unmarshal([]byte(line), &comicLine)
+		
+		titleFields := strings.Fields(comicLine.SafeTitle)
+		transcriptFields := strings.Fields(comicLine.Transcript)
+
+		combinedList := append(titleFields, transcriptFields...)
+
+		for _, value := range combinedList {
+			// entry := invertedIndexEntry{""}
+			searchValue := strings.ToLower(value)
+			existingEntry := invertedIndex[searchValue]
+
+			if (existingEntry == nil) {
+				entry := invertedIndexEntry{}
+				entry.SearchTerm = searchValue
+				entry.Comic = make(map[int]comic)
+				entry.Comic[comicLine.Num] = comicLine
+				entry.Frequency = 1
+				invertedIndex[searchValue] = &entry
+			} else {
+				existingEntry.Frequency++
+				existingEntry.Comic[comicLine.Num] = comicLine
+				// no need to update invertedIndex, as we update the entry directly
+			}
+		}
+	}
+
+	return invertedIndex, nil
+}
+
+type invertedIndexEntry struct {
+	SearchTerm string
+	Frequency int
+	Comic map[int]comic
+}
+type invertedIndex struct {
+	HashMap map[string]*invertedIndexEntry
 }
 
 type comic struct {
