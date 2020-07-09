@@ -34,12 +34,16 @@ func main() {
 		log.Fatalf("xkcd:main %v\n", err)
 	}
 
-	printHits(arg, index)
+	if (arg != "") {
+		printHits(arg, index)
+	}
 
 	newInput := bufio.NewScanner(os.Stdin)
 
 	for newInput.Scan() {
-		printHits(newInput.Text(), index)
+		if (strings.TrimSpace(newInput.Text()) != "") {
+			printHits(newInput.Text(), index)
+		}
 	}
 }
 
@@ -61,11 +65,15 @@ func printHits(searchTerm string, searchIndex map[int]comic) {
 }
 
 func parseArgs() string {
-	if (len(os.Args) != 2) {
+	if (len(os.Args) > 2) {
 		log.Fatalf("xkcd:parseArgs %v\n", fmt.Errorf("Invalid number of args"))
 	}
 
-	return os.Args[1]
+	if (len(os.Args) == 1) {
+		return ""
+	}
+
+	return strings.TrimSpace(os.Args[1])
 }
 
 func scrapeXkcd() {
