@@ -18,7 +18,7 @@ import (
 	"time"
 	"encoding/json"
 	"log"
-	_ "bufio"
+	"bufio"
 )
 
 func main() {
@@ -36,11 +36,11 @@ func main() {
 
 	printHits(arg, index)
 
-	// newInput := bufio.NewScanner(os.Stdin)
+	newInput := bufio.NewScanner(os.Stdin)
 
-	// for newInput.Scan() {
-	// 	fmt.Println("input:", newInput.Text())
-	// }
+	for newInput.Scan() {
+		printHits(newInput.Text(), index)
+	}
 }
 
 
