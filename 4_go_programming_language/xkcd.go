@@ -18,6 +18,7 @@ import (
 	"time"
 	"encoding/json"
 	"log"
+	"bufio"
 )
 
 func main() {
@@ -27,33 +28,82 @@ func main() {
 		os.Exit(0)
 	} 
 
-	index, err := buildIndex()
+	invertedIndex, err := buildInvertedIndex()
 
 	if (err != nil) {
 		log.Fatalf("xkcd:main %v\n", err)
 	}
+	
+	if (arg != "") {
+		testInvertedIndex(arg, invertedIndex)
+		// exit if invoked with arg
+		os.Exit(0)
+	}
 
-	for _, value := range index {
-		// todo: check all relevant keys for match
-		safeTitleHits := strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(arg))
-		transcriptHits := strings.Contains(strings.ToLower(value.Transcript), strings.ToLower(arg))
+	newInput := bufio.NewScanner(os.Stdin)
 
+	for newInput.Scan() {
+		cleanInput := strings.TrimSpace(newInput.Text())
+		if (cleanInput != "") {
+			testInvertedIndex(cleanInput, invertedIndex)
+		}
+	}
+}
+
+
+func printComic(value comic) {
+	// url should look like this -> https://xkcd.com/1/
+	url := "https://xkcd.com/" + strconv.Itoa(value.Num)
+	fmt.Println("-------------------------------------")
+	fmt.Println("Url:", url)
+	fmt.Println("Title:", value.SafeTitle)
+	fmt.Println("Transcript:")
+	fmt.Println(value.Transcript)
+	fmt.Println("-------------------------------------")
+}
+
+// not used, keeping for future benchmarking
+func printHits(searchTerm string, searchIndex map[int]comic) {
+	count := 0
+	for _, value := range searchIndex {
+		safeTitleHits := strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(searchTerm))
+		transcriptHits := strings.Contains(strings.ToLower(value.Transcript), strings.ToLower(searchTerm))
+		
 		if (safeTitleHits || transcriptHits) {
-			// url should look like this -> https://xkcd.com/1/
-			url := "https://xkcd.com/" + strconv.Itoa(value.Num)
-			fmt.Println("Url:", url)
-			fmt.Println("Transcript:", value.Transcript)
-			fmt.Println("-------------------------------------")
+			count++
+			printComic(value)
+		}
+	}
+	fmt.Println("count original:", count)
+}
+
+// only checks for exact (but caseinsensitive) matches:
+// 'space' will match 'Space', 'spAce', 'SPACE' --
+// -- but will not match 'Myspace'
+// todo: match substrings too
+func testInvertedIndex(searchTerm string, invertedIndex map[string]*invertedIndexEntry) {
+	hits := invertedIndex[strings.ToLower(searchTerm)]
+	if (hits == nil) {
+		fmt.Println("no hits !!")
+	} else {
+		foundComics := hits.Comics
+
+		for _, value := range foundComics {
+			printComic(value)
 		}
 	}
 }
 
 func parseArgs() string {
-	if (len(os.Args) != 2) {
+	if (len(os.Args) > 2) {
 		log.Fatalf("xkcd:parseArgs %v\n", fmt.Errorf("Invalid number of args"))
 	}
 
-	return os.Args[1]
+	if (len(os.Args) == 1) {
+		return ""
+	}
+
+	return strings.TrimSpace(os.Args[1])
 }
 
 func scrapeXkcd() {
@@ -139,13 +189,74 @@ func buildIndex() (map[int]comic, error) {
 
 	var index = make(map[int]comic)
 
+	lineCount := 0
 	for _, line:= range strings.Split(string(data), "\n") {
+		lineCount++
 		comicLine := comic{}
 		json.Unmarshal([]byte(line), &comicLine)
 		index[comicLine.Num] = comicLine
 	}
-
+	fmt.Println("original line count:", lineCount)
 	return index, nil
+}
+
+func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
+	fileName := "db.jsonl"
+
+	data, err := ioutil.ReadFile(fileName)
+
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "buildIndex:read %v\n", err)
+		return nil, err
+	}
+
+	var invertedIndex = make(map[string]*invertedIndexEntry)
+
+	for _, line:= range strings.Split(string(data), "\n") {
+		// line is a document
+		// go over `safe_title` and `transcript`,
+		// lower case, split at whitespace,
+		// for each string entry, add to invertedIndex
+		// profit
+		comicLine := comic{}
+		json.Unmarshal([]byte(line), &comicLine)
+		
+		// todo: account for searchterms being substrings of fields
+		titleFields := strings.Fields(comicLine.SafeTitle)
+		transcriptFields := strings.Fields(comicLine.Transcript)
+
+		combinedList := append(titleFields, transcriptFields...)
+
+		for _, value := range combinedList {
+			// entry := invertedIndexEntry{""}
+			searchValue := strings.ToLower(value)
+			existingEntry := invertedIndex[searchValue]
+
+			if (existingEntry == nil) {
+				entry := invertedIndexEntry{}
+				entry.SearchTerm = searchValue
+				entry.Comics = make(map[int]comic)
+				entry.Comics[comicLine.Num] = comicLine
+				entry.Frequency = 1
+				invertedIndex[searchValue] = &entry
+			} else {
+				existingEntry.Frequency++
+				existingEntry.Comics[comicLine.Num] = comicLine
+				// no need to update invertedIndex, as we update the entry directly
+			}
+		}
+	}
+
+	return invertedIndex, nil
+}
+
+type invertedIndexEntry struct {
+	SearchTerm string
+	Frequency int
+	Comics map[int]comic
+}
+type invertedIndex struct {
+	HashMap map[string]*invertedIndexEntry
 }
 
 type comic struct {
