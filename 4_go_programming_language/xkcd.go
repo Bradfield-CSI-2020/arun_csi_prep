@@ -29,13 +29,15 @@ func main() {
 	} 
 
 	invertedIndex, err := buildInvertedIndex()
-	
+
 	if (err != nil) {
 		log.Fatalf("xkcd:main %v\n", err)
 	}
 	
 	if (arg != "") {
 		testInvertedIndex(arg, invertedIndex)
+		// exit if invoked with arg
+		os.Exit(0)
 	}
 
 	newInput := bufio.NewScanner(os.Stdin)
@@ -58,8 +60,11 @@ func printHits(searchTerm string, searchIndex map[int]comic) {
 			count++
 			// url should look like this -> https://xkcd.com/1/
 			url := "https://xkcd.com/" + strconv.Itoa(value.Num)
+			fmt.Println("-------------------------------------")
 			fmt.Println("Url:", url)
-			fmt.Println("Transcript:", value.Transcript)
+			fmt.Println("Title:", value.SafeTitle)
+			fmt.Println("Transcript:")
+			fmt.Println(value.Transcript)
 			fmt.Println("-------------------------------------")
 		}
 	}
@@ -75,10 +80,13 @@ func testInvertedIndex(searchTerm string, invertedIndex map[string]*invertedInde
 
 		foundComics := hits.Comic
 
-		for _, found := range foundComics {
-			url := "https://xkcd.com/" + strconv.Itoa(found.Num)
+		for _, value := range foundComics {
+			url := "https://xkcd.com/" + strconv.Itoa(value.Num)
+			fmt.Println("-------------------------------------")
 			fmt.Println("Url:", url)
-			fmt.Println("Transcript:", found.Transcript)
+			fmt.Println("Title:", value.SafeTitle)
+			fmt.Println("Transcript:")
+			fmt.Println(value.Transcript)
 			fmt.Println("-------------------------------------")
 		}
 
