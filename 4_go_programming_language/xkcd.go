@@ -50,6 +50,18 @@ func main() {
 	}
 }
 
+
+func printComic(value comic) {
+	// url should look like this -> https://xkcd.com/1/
+	url := "https://xkcd.com/" + strconv.Itoa(value.Num)
+	fmt.Println("-------------------------------------")
+	fmt.Println("Url:", url)
+	fmt.Println("Title:", value.SafeTitle)
+	fmt.Println("Transcript:")
+	fmt.Println(value.Transcript)
+	fmt.Println("-------------------------------------")
+}
+
 func printHits(searchTerm string, searchIndex map[int]comic) {
 	count := 0
 	for _, value := range searchIndex {
@@ -58,14 +70,7 @@ func printHits(searchTerm string, searchIndex map[int]comic) {
 		
 		if (safeTitleHits || transcriptHits) {
 			count++
-			// url should look like this -> https://xkcd.com/1/
-			url := "https://xkcd.com/" + strconv.Itoa(value.Num)
-			fmt.Println("-------------------------------------")
-			fmt.Println("Url:", url)
-			fmt.Println("Title:", value.SafeTitle)
-			fmt.Println("Transcript:")
-			fmt.Println(value.Transcript)
-			fmt.Println("-------------------------------------")
+			printComic(value)
 		}
 	}
 	fmt.Println("count original:", count)
@@ -73,25 +78,14 @@ func printHits(searchTerm string, searchIndex map[int]comic) {
 
 func testInvertedIndex(searchTerm string, invertedIndex map[string]*invertedIndexEntry) {
 	hits := invertedIndex[strings.ToLower(searchTerm)]
-	if (hits != nil) {
-		fmt.Println("Freq", hits.Frequency)
-		fmt.Println("Term", hits.SearchTerm)
-		fmt.Println("Comics Count", len(hits.Comic))
+	if (hits == nil) {
+		fmt.Println("no hits !!")
+	}
 
-		foundComics := hits.Comic
+	foundComics := hits.Comic
 
-		for _, value := range foundComics {
-			url := "https://xkcd.com/" + strconv.Itoa(value.Num)
-			fmt.Println("-------------------------------------")
-			fmt.Println("Url:", url)
-			fmt.Println("Title:", value.SafeTitle)
-			fmt.Println("Transcript:")
-			fmt.Println(value.Transcript)
-			fmt.Println("-------------------------------------")
-		}
-
-	} else {
-		fmt.Println("Freq", 0)
+	for _, value := range foundComics {
+		printComic(value)
 	}
 }
 
