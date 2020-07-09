@@ -9,7 +9,7 @@ if [ $# -eq 0 ]
 fi
 
 # Get search hits
-url="https://en.wikipedia.org/w/api.php?action=opensearch&search=${title}&limit=3&namespace=0&format=json"
+# url="https://en.wikipedia.org/w/api.php?action=opensearch&search=${title}&limit=3&namespace=0&format=json"
 # echo "$url"
 # result=$(curl -s -X GET ${url} | jq -r '.[1] | map(sub(" "; "_")) | join(" ")')
 
@@ -27,31 +27,21 @@ echo "Summary:"
 echo ""
 echo "${summary}"
 
-
-if [ $# -eq 2 ]
+if [ $# -eq 1 ]
   then
-    echo ""
-    echo "sections:"
-    echo ""
     # get sections titles
     url="https://en.wikipedia.org/w/api.php?action=parse&format=json&page=${title}&prop=sections&disabletoc=1"
     response=$(curl -s -X GET ${url})
     sections=$(echo "${response}" | jq '.parse.sections' | jq '.[] | select(.toclevel == 1) | .line')
-    sections_index=$(echo "${response}" | jq '.parse.sections' | jq '.[] | select(.toclevel == 1) | .number')
+    # sections_index=$(echo "${response}" | jq '.parse.sections' | jq '.[] | select(.toclevel == 1) | .number')
+    echo ""
+    echo "Sections:"
+    echo ""
+    echo "${sections}"
+fi
 
-    # echo "${sections_index}"
-    # echo "${sections}"
-
-    # hash[${sections_index[i]}]=${sections[i]}
-
-
-    # for i in "${sections_index[@]}"; do 
-    #     echo "${hash[$i]}":; 
-    # done
-
-    section_detail_url="https://en.wikipedia.org/w/api.php?action=parse&format=json&page=${title}&prop=text&section=1&disabletoc=1"
-    response=$(curl -s -X GET "${section_detail_url}")
-    detail=$(echo "${response}" | jq '.parse.text."*"')
+if [ $# -eq 2 ]
+  then
 
     # todo:
     # the html returned has all the details we need
@@ -60,28 +50,34 @@ if [ $# -eq 2 ]
     # we can then look for the first ". " ? maybe...
     # but we need to strip all html in there
 
-    echo "${detail}"
+    url="https://en.wikipedia.org/w/api.php?action=parse&format=json&page=${title}&prop=sections&disabletoc=1"
+    response=$(curl -s -X GET ${url})
+    # sections=$(echo "${response}" | jq -r '.parse.sections | .[] | select(.toclevel == 1) | .line')
+    readarray -t sections < <(echo "${response}" | jq -r '.parse.sections | .[] | select(.toclevel == 1) | .line')
+
+    # todo: use global substitution to replace spaces
+    # | gsub(" "; "_")
     
-    # | map(select(.toclevel == 1))
-    # | map(select(.toclevel = 1)) |.line' 
+    # printf '%s\n' "${sections[@]}"
+
+    # declare -p sections | grep -q '^declare \-a' && echo array || echo no array
+
+    for i in "${!sections[@]}"; do
+      if [[ "${sections[$i]}" = "${section_title}" ]]; then
+        # echo "${sections[$i]}"
+        # echo "Section index is";
+        index=$((i+1))
+        # echo "${index}";
+        echo ""
+        echo "${sections[$i]}:"
+        echo ""
+        section_detail_url="https://en.wikipedia.org/w/api.php?action=parse&format=json&page=${index}&prop=text&section=1&disabletoc=1"
+        response=$(curl -s -X GET "${section_detail_url}")
+        detail=$(echo "${response}" | jq '.parse.text."*"')
+        echo "${detail}"
+      fi
+    done
+
     exit 0
 fi
 
-
-# get sections titles
-# url="https://en.wikipedia.org/w/api.php?action=parse&format=json&page=${search_term}&prop=sections&disabletoc=1"
-# curl -X GET ${url} | jq '.parse.sections' | jq '.[] | .line' 
-
-# section_title=$2
-# section_detail="https://en.wikipedia.org/w/api.php?action=parse&format=json&page=${search_term}&prop=text&sectiontitle=${section_title}&disabletoc=1"
-# echo $section_detail
-# # curl -X GET ${section_detail} | jq '.parse.text."*"' | grep -o '<p>.*</p>' | sed 's/\(<p>\|<\/p>\)//g'
-# curl -X GET ${section_detail} | jq '.parse.text."*"' > example.html
-
-
-# better section detail 
-# https://en.wikipedia.org/w/api.php?action=parse&format=json&page=Walrus&prop=text&section=3&disabletoc=1
-
-
-
-# curl -sL https://www.iana.org/ | xargs | egrep -o "<tr>.*?</tr>"
