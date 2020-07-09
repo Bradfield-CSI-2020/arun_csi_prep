@@ -21,3 +21,13 @@ Section Detail
 ```
 https://en.wikipedia.org/w/api.php?action=parse&format=json&page=Walrus&prop=text&section=1&disabletoc=1
 ```
+
+
+section details but while using section tile as id
+but does not work well
+```
+https://en.wikipedia.org/w/api.php?action=parse&format=json&page=house&prop=text&sectiontitle=Etymology&disabletoc=1&sectionpreview=1
+```
+
+# mobile sections?
+# https://en.wikipedia.org/api/rest_v1/page/mobile-sections/Walrus
