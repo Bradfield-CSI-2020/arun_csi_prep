@@ -57,10 +57,10 @@ func printHits(searchTerm string, searchIndex map[int]comic) {
 		if (safeTitleHits || transcriptHits) {
 			count++
 			// url should look like this -> https://xkcd.com/1/
-			// url := "https://xkcd.com/" + strconv.Itoa(value.Num)
-			// fmt.Println("Url:", url)
-			// fmt.Println("Transcript:", value.Transcript)
-			// fmt.Println("-------------------------------------")
+			url := "https://xkcd.com/" + strconv.Itoa(value.Num)
+			fmt.Println("Url:", url)
+			fmt.Println("Transcript:", value.Transcript)
+			fmt.Println("-------------------------------------")
 		}
 	}
 	fmt.Println("count original:", count)
@@ -206,14 +206,15 @@ func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
 	var invertedIndex = make(map[string]*invertedIndexEntry)
 
 	for _, line:= range strings.Split(string(data), "\n") {
-		// line is the document
-		// go over safetitle and transcript, 
-		// lower case, split at whitespace, 
+		// line is a document
+		// go over `safe_title` and `transcript`,
+		// lower case, split at whitespace,
 		// for each string entry, add to invertedIndex
 		// profit
 		comicLine := comic{}
 		json.Unmarshal([]byte(line), &comicLine)
 		
+		// todo: account for searchterms being substrings of fields
 		titleFields := strings.Fields(comicLine.SafeTitle)
 		transcriptFields := strings.Fields(comicLine.Transcript)
 
