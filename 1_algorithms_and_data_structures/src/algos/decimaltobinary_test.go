@@ -18,4 +18,10 @@ func TestDecimalToBinary(t *testing.T) {
 	if (v != "0") {
 		t.Error("Expected 0, got", v)
 	}
+
+	v = algos.DecimalToBinary(42)
+
+	if (v != "101010") {
+		t.Error("Expected 101010, got", v)
+	}
 }
