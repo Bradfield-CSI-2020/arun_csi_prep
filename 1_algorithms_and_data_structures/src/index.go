@@ -46,4 +46,7 @@ func main() {
 	fmt.Println("item at the top is?" , newStack.Pop())
 	fmt.Println("Stack is empty?" , newStack.IsEmpty())	
 
+
+	fmt.Println("Hello?", algos.CheckbalancedParans("{{}}"))
+
 }
