@@ -4,4 +4,3 @@ package algos
 func CheckbalancedParans(first string, second string) bool {
 	return first == second
 }
-
