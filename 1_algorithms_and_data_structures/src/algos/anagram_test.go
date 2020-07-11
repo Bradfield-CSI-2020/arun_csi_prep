@@ -8,7 +8,6 @@ import (
 	"algos"
 )
 
-
 func TestAnagramCheck(t *testing.T) {
 	v := algos.AnagramCheck("hello", "helol")
 
