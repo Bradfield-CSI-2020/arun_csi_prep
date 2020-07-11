@@ -1,7 +1,5 @@
 package datastructures
 
-// import ()
-
 // Dequeue is amazing
 type Dequeue struct {
 	Queue
