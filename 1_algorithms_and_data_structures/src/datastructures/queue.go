@@ -21,6 +21,6 @@ func (q *Queue) Enqueue(item string) {
 // Dequeue returns from front of the queue
 func (q *Queue) Dequeue() string {
 	item := (*q)[0] 
-	*q =  (*q)[0:]
+	*q =  (*q)[1:]
 	return item
 }
