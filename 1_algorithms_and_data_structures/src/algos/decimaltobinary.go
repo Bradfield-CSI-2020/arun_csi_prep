@@ -26,7 +26,7 @@ func DecimalToBinary(decimalNum int) string {
 
 	if (binaryRep == "") {
 		return "0"
-	} else {
-		return binaryRep
 	}
+
+	return binaryRep
 }

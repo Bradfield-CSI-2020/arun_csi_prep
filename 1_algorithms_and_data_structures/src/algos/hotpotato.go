@@ -1,9 +1,7 @@
 package algos
 
 import (
-
 	"datastructures"
-
 )
 
 // Hotpotato tells us who survies a game of hotpotato
