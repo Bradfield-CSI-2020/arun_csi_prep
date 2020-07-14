@@ -1,5 +1,9 @@
 package datastructures
 
+import (
+	"fmt"
+)
+
 // Queue is amazing
 type Queue []string
 
@@ -19,8 +23,14 @@ func (q *Queue) Enqueue(item string) {
 }
 
 // Dequeue returns from front of the queue
-func (q *Queue) Dequeue() string {
+func (q *Queue) Dequeue() (string, error) {
+
+	if (q.IsEmpty()) {
+		err := fmt.Errorf("queue is empty")
+		return "", err
+	}
+
 	item := (*q)[0] 
 	*q =  (*q)[1:]
-	return item
+	return item, nil
 }

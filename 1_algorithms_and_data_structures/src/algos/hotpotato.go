@@ -16,12 +16,14 @@ func Hotpotato(names []string, num int) string {
 	for newQueue.Size() > 1 {
 
 		for i:= 0; i < num; i++ {
-			name := newQueue.Dequeue()
+			name, _ := newQueue.Dequeue()
 			newQueue.Enqueue(name)
 		}
 
 		newQueue.Dequeue() // dead
 	}
 
-	return newQueue.Dequeue()
+	survivor, _ := newQueue.Dequeue()
+
+	return survivor
 }

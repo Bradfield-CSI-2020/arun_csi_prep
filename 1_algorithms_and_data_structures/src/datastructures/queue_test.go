@@ -25,13 +25,13 @@ func TestQueue(t *testing.T) {
 		t.Error("expected 2, but got ", newQueue.Size())
 	}
 
-	item := newQueue.Dequeue()
+	item, _ := newQueue.Dequeue()
 
 	if (item != "Arun") {
 		t.Error("expected Arun, but got ", item)
 	}
 
-	item = newQueue.Dequeue()
+	item, _ = newQueue.Dequeue()
 
 	if (item != "Zack") {
 		t.Error("expected Zack, but got ", item)
