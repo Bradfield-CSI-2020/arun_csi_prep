@@ -4,12 +4,6 @@ package datastructures
 // 	"fmt"
 // )
 
-// OrderedListNode is awesome
-// type OrderedListNode struct {
-// 	Value int
-// 	Next *OrderedListNode
-// }
-
 // OrderedList is awesome
 type OrderedList struct {
 	List
@@ -24,6 +18,7 @@ func (ol *OrderedList) Add(value int) {
 
 	if (prev == nil) {
 		ol.Head = &node
+		return
 	}
 
 	if (prev.Value >= value) {
@@ -79,23 +74,22 @@ func (ol *OrderedList) Search(value int) int {
 // Remove the first occurrence of a value from the list
 func (ol *OrderedList) Remove(value int) bool {
 
-	cur := ol.Head
+	prev := ol.Head
 
-	if (cur == nil) {
+	if (prev == nil) {
 		return false
 	}
 
-	if (cur.Value == value) {
-		ol.Head = cur.Next
+	if (prev.Value == value) {
+		ol.Head = prev.Next
 		return true
 	}
 
-	if (cur.Value > value) {
+	if (prev.Value > value) {
 		return false
 	}
 
-	prev := cur
-	cur = cur.Next
+	cur := prev.Next
 
 	for cur != nil {
 		if (cur.Value == value) {
