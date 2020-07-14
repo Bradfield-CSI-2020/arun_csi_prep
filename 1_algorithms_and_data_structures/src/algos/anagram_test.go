@@ -21,7 +21,6 @@ func TestAnagramCheck(t *testing.T) {
 		t.Error("Expected false, got", v)
 	}
 
-
 	firstWord := "radiometeorograph"
 
 	wordArray := strings.Split(firstWord, "")
