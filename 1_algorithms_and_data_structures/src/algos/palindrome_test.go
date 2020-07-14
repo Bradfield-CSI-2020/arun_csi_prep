@@ -25,4 +25,11 @@ func TestIsPalindrome(t *testing.T) {
 	if (v != false) {
 		t.Error("expected false, but got ", v)
 	}
+
+	word = "asdfffdsa"
+	v = algos.IsPalindrome(word)
+
+	if (v != true) {
+		t.Error("expected true, but got ", v)
+	}
 }

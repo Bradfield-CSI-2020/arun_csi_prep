@@ -1,8 +1,6 @@
 package algos
 
 import (
-	"fmt"
-
 	"datastructures"
 )
 
@@ -17,10 +15,12 @@ func IsPalindrome(word string) bool {
 
 	for dequeue.Size() > 0 {
 
-		fmt.Println("size", dequeue.Size())
+		if (dequeue.Size() == 1) {
+			return true
+		}
+
 		first, _ := dequeue.Dequeue()
 		second, _ := dequeue.DequeueEnd()
-
 
 		if (first != second) {
 			return false

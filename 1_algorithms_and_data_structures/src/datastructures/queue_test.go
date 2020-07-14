@@ -40,4 +40,15 @@ func TestQueue(t *testing.T) {
 	if (newQueue.IsEmpty() != true) {
 		t.Error("expected true, but got ", newQueue.IsEmpty())
 	}
+
+	item, err := newQueue.Dequeue()
+
+	if (item != "") {
+		t.Error("expected \"\", but got ", item)
+	}
+
+	if (err == nil) {
+		t.Error("expected failure, but got ", err)
+	}
+
 }

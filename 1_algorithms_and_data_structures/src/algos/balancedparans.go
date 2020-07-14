@@ -21,8 +21,6 @@ func CheckbalancedParans(parans string) bool {
 	reverseParansMap["}"] = "{"
 	reverseParansMap[")"] = "("
 
-
-
 	for _, vRune := range parans {
 		value := string(vRune)
 
