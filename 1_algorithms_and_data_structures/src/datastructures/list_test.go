@@ -29,7 +29,6 @@ func TestListNode(t *testing.T)  {
 		newList.Add(value)
 	}
 
-
 	size = newList.Size()
 
 	if (size != 5) {

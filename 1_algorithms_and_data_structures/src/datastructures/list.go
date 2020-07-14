@@ -108,7 +108,6 @@ func (l *List) Insert(value int, index int) bool {
 	count := 1
 
 	for cur != nil {
-		fmt.Println("Checking")
 		if (count == index) {		
 			fmt.Println("Adding")
 			node.Next = cur
