@@ -98,7 +98,7 @@ func TestListNode(t *testing.T)  {
 	}
 
 
-	added = newList.Insert(8, 0)
+	newList.Insert(8, 0)
 
 	found = newList.Search(8)
 
