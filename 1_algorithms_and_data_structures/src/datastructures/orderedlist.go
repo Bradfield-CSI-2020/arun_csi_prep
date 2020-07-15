@@ -1,9 +1,5 @@
 package datastructures
 
-// import (
-// 	"fmt"
-// )
-
 // OrderedList is awesome
 type OrderedList struct {
 	List
@@ -37,7 +33,6 @@ func (ol *OrderedList) Add(value int) {
 
 		if (cur.Value < value) {
 			prev = cur
-			cur = cur.Next
 			continue
 		}
 

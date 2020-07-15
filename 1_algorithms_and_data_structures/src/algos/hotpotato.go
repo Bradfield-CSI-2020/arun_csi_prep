@@ -1,6 +1,8 @@
 package algos
 
 import (
+	"log"
+
 	"datastructures"
 )
 
@@ -20,7 +22,11 @@ func Hotpotato(names []string, num int) string {
 			newQueue.Enqueue(name)
 		}
 
-		newQueue.Dequeue() // dead
+		_, err := newQueue.Dequeue() // dead
+
+		if (err != nil) {
+			log.Fatalf("Hotpotato: %v\n", err)
+		}
 	}
 
 	survivor, _ := newQueue.Dequeue()
