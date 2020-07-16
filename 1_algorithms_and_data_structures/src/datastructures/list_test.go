@@ -112,4 +112,19 @@ func TestListNode(t *testing.T)  {
 		t.Error("expected false, got ", added)
 	}
 
+
+	if (newList.Size() != 6) {
+		t.Error("expected 6, got ", newList.Size())
+	}
+
+	added = newList.UniqueInsert(7)
+
+	if (added != false) {
+		t.Error("expected false, got ", added)
+	}
+
+	if (newList.Size() != 6) {
+		t.Error("expected 6, got ", newList.Size())
+	}
+
 }

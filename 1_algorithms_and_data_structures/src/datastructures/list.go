@@ -21,12 +21,13 @@ func (l *List) IsEmpty() bool {
 }
 
 // Add item to the head of the List
-func (l *List) Add(value int) {
+func (l *List) Add(value int) bool {
 	var node ListNode
 	node.Value = value
 	curHead := l.Head
 	node.Next = curHead
 	l.Head = &node
+	return true
 }
 
 // Size returns the size of the list
@@ -87,6 +88,17 @@ func (l *List) Remove(value int) bool {
 
 		prev = cur
 		cur = cur.Next
+	}
+
+	return false
+}
+
+// UniqueInsert inserts a value if the value is not in the list
+func (l *List) UniqueInsert(value int) bool {
+	found := l.Search(value)
+
+	if (found == -1) {
+		return l.Add(value)
 	}
 
 	return false
