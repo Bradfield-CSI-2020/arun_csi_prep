@@ -1,35 +1,13 @@
-#!/usr/bin/env bash
-
 _wiki_completions()
 {
+  if [ ${#COMP_WORDS[@]} -lt 2 ]; then
+    return
+  fi
+  search_url="https://en.wikipedia.org/w/api.php?action=opensearch&search=${COMP_WORDS[1]}&limit=1&namespace=0&format=json"
+  response=$(curl -s -L -X GET "${search_url}")
+  results=$(echo "${response}" | jq -r '.[1] | join(" ")')
 
-  search_url="https://en.wikipedia.org/w/api.php?action=opensearch&search=${COMP_WORDS[1]}&limit=3&namespace=0&format=json"
-  
-  result=$(curl -s -L -X GET "${search_url}" | jq -r '.[1] | map(sub(" "; "_")) | join(" ")')
-  COMPREPLY=("$(compgen -W "${result}" -- "${COMP_WORDS[1]}")")
+  COMPREPLY=("$(compgen -W "${results}" -- "${COMP_WORDS[1]}")")
 }
-
 complete -F _wiki_completions wiki
 
-
-# _wiki_completions()
-# {
-#     # Get search hits
-#     url="https://en.wikipedia.org/w/api.php?action=opensearch&search=${COMP_WORDS[0]}&limit=3&namespace=0&format=json"
-#     result=$(curl -s -X GET ${url} | jq '.[1] | join(" ")')
-#     COMPREPLY=($(compgen -W ${result} "${COMP_WORDS[1]}"))
-# }
-
-# complete -F _wiki_completions wiki
-
-
-
-# Get search hits
-# url="https://en.wikipedia.org/w/api.php?action=opensearch&search=${title}&limit=3&namespace=0&format=json"
-# echo "$url"
-# result=$(curl -s -X GET ${url} | jq -r '.[1] | map(sub(" "; "_")) | join(" ")')
-
-# arr=($result)
-
-# for i in ${arr[@]}; do echo $i; done
-# todo: use jq map to replace space with string

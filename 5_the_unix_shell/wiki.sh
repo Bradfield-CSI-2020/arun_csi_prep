@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 if [ $# -eq 0 ]
@@ -15,7 +14,6 @@ if [ $# -gt 2 ]
 fi
 
 title=$1
-section_title=$2
 
 summary_url="https://en.wikipedia.org/api/rest_v1/page/summary/${title}"
 
@@ -59,6 +57,7 @@ fi
 if [ $# -eq 2 ]
   then
 
+    section_title=$2
     # todo:
     # the html returned has all the details we need
     # the section title and the subsection have this before them `class="mw-headline"`
