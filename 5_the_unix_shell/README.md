@@ -31,3 +31,16 @@ https://en.wikipedia.org/w/api.php?action=parse&format=json&page=house&prop=text
 
 # mobile sections?
 # https://en.wikipedia.org/api/rest_v1/page/mobile-sections/Walrus
+
+
+### Reading List
+
+1. https://www.shellscript.sh/tips/spinner/
+2. https://gist.github.com/mohanpedala/1e2ff5661761d3abd0385e8223e16425
+3. https://iridakos.com/programming/2018/03/01/bash-programmable-completion-tutorial
+
+### TODO:
+
+- [ ] spinner while waiting for requests?
+- [ ] use gnu sed, awk etc
+- [ ] use IFS=\n for array set

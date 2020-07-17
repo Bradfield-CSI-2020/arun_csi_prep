@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-title=$1
-section_title=$2
+
+set -euo pipefail
 
 if [ $# -eq 0 ]
   then
@@ -13,6 +13,9 @@ if [ $# -gt 2 ]
     echo "Too many arguments"
     exit 1
 fi
+
+title=$1
+section_title=$2
 
 summary_url="https://en.wikipedia.org/api/rest_v1/page/summary/${title}"
 
@@ -32,7 +35,7 @@ echo "${summary}" | lynx -stdin -dump
 
 # get top level sections titles
 url="https://en.wikipedia.org/w/api.php?action=parse&format=json&page=${title}&prop=sections&disabletoc=1"
-response=$(curl -s -X GET ${url})
+response=$(curl -s -X GET "${url}")
 readarray -t sections < <(echo "${response}" | jq -r '.parse.sections | .[] | select(.toclevel == 1) | .line')
 
 # we could use the following jq filter to get the string value snake cased to use as url params

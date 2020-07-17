@@ -3,8 +3,9 @@
 _wiki_completions()
 {
 
-  url="https://en.wikipedia.org/w/api.php?action=opensearch&search=${COMP_WORDS[1]}&limit=3&namespace=0&format=json"
-  result=$(curl -s -X GET "${url}" | jq -r '.[1] | map(sub(" "; "_")) | join(" ")')
+  search_url="https://en.wikipedia.org/w/api.php?action=opensearch&search=${COMP_WORDS[1]}&limit=3&namespace=0&format=json"
+  
+  result=$(curl -s -L -X GET "${search_url}" | jq -r '.[1] | map(sub(" "; "_")) | join(" ")')
   COMPREPLY=("$(compgen -W "${result}" -- "${COMP_WORDS[1]}")")
 }
 
