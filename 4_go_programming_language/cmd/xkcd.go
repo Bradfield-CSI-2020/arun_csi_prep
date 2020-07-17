@@ -7,28 +7,25 @@
 package main
 
 // todo: write an index file that has a init function that creates the in-memory index of comics?
-
 import (
 	"fmt"
 	"os"
 	"strings"
-	"io/ioutil"
 	"strconv"
-	"encoding/json"
 	"log"
 	"bufio"
-	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/xkcdlib"
-	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/ds"
+	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/internal/db"
+	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/internal/index"
 )
 
 func main() {
 	arg := parseArgs()
 	if arg == "--index" {
-		xkcdlib.Scrape()
+		db.Scrape()
 		os.Exit(0)
 	} 
 
-	invertedIndex, err := buildInvertedIndex()
+	invertedIndex, err := index.BuildInvertedIndex()
 
 	if (err != nil) {
 		log.Fatalf("xkcd:main %v\n", err)
@@ -51,7 +48,7 @@ func main() {
 }
 
 
-func printComic(value xkcdlib.Comic) {
+func printComic(value index.Comic) {
 	// url should look like this -> https://xkcd.com/1/
 	url := "https://xkcd.com/" + strconv.Itoa(value.Num)
 	fmt.Println("-------------------------------------")
@@ -63,7 +60,7 @@ func printComic(value xkcdlib.Comic) {
 }
 
 // not used, keeping for future benchmarking
-func printHits(searchTerm string, searchIndex map[int]xkcdlib.Comic) {
+func printHits(searchTerm string, searchIndex map[int]index.Comic) {
 	count := 0
 	for _, value := range searchIndex {
 		safeTitleHits := strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(searchTerm))
@@ -81,7 +78,7 @@ func printHits(searchTerm string, searchIndex map[int]xkcdlib.Comic) {
 // 'space' will match 'Space', 'spAce', 'SPACE' --
 // -- but will not match 'Myspace'
 // todo: match substrings too
-func testInvertedIndex(searchTerm string, invertedIndex map[string]*ds.InvertedIndexEntry) {
+func testInvertedIndex(searchTerm string, invertedIndex map[string]*index.InvertedIndexEntry) {
 	hits := invertedIndex[strings.ToLower(searchTerm)]
 	if (hits == nil) {
 		fmt.Println("no hits !!")
@@ -104,75 +101,4 @@ func parseArgs() string {
 	}
 
 	return strings.TrimSpace(os.Args[1])
-}
-
-func buildIndex() (map[int]xkcdlib.Comic, error) {
-	fileName := "db.jsonl"
-
-	data, err := ioutil.ReadFile(fileName)
-
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "buildIndex:read %v\n", err)
-		return nil, err
-	}
-
-	var index = make(map[int]xkcdlib.Comic)
-
-	lineCount := 0
-	for _, line:= range strings.Split(string(data), "\n") {
-		lineCount++
-		comicLine := xkcdlib.Comic{}
-		json.Unmarshal([]byte(line), &comicLine)
-		index[comicLine.Num] = comicLine
-	}
-	fmt.Println("original line count:", lineCount)
-	return index, nil
-}
-
-func buildInvertedIndex() (map[string]*ds.InvertedIndexEntry, error) {
-	fileName := "db.jsonl"
-
-	data, err := ioutil.ReadFile(fileName)
-
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "buildIndex:read %v\n", err)
-		return nil, err
-	}
-
-	var invertedIndex = make(map[string]*ds.InvertedIndexEntry)
-
-	for _, line:= range strings.Split(string(data), "\n") {
-		// line is a document
-		// go over `safe_title` and `transcript`,
-		// lower case, split at whitespace,
-		// for each string entry, add to invertedIndex
-		// profit
-		comicLine := xkcdlib.Comic{}
-		json.Unmarshal([]byte(line), &comicLine)
-		
-		// todo: account for searchterms being substrings of fields
-		titleFields := strings.Fields(comicLine.SafeTitle)
-		transcriptFields := strings.Fields(comicLine.Transcript)
-
-		combinedList := append(titleFields, transcriptFields...)
-
-		for _, value := range combinedList {
-			searchValue := strings.ToLower(value)
-			existingEntry := invertedIndex[searchValue]
-
-			if (existingEntry == nil) {
-				entry := ds.InvertedIndexEntry{}
-				entry.SearchTerm = searchValue
-				entry.Comics = make(map[int]xkcdlib.Comic)
-				entry.Comics[comicLine.Num] = comicLine
-				entry.Frequency = 1
-				invertedIndex[searchValue] = &entry
-			} else {
-				existingEntry.Frequency++
-				existingEntry.Comics[comicLine.Num] = comicLine
-			}
-		}
-	}
-
-	return invertedIndex, nil
 }

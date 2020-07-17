@@ -1,14 +1,10 @@
-package ds
-
-import (
-	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/xkcdlib"
-)
+package index
 
 // InvertedIndexEntry is awesom
 type InvertedIndexEntry struct {
 	SearchTerm string
 	Frequency int
-	Comics map[int]xkcdlib.Comic
+	Comics map[int]Comic
 }
 
 // InvertedIndex is awesom

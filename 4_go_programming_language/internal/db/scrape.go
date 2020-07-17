@@ -1,10 +1,9 @@
-package xkcdlib
+package db
 
 import (
 	"strconv"
 	"time"
 	"log"
-	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/util"
 )
 
 // Scrape - scrape xkcd and write to file
@@ -23,7 +22,7 @@ func Scrape() {
 			log.Fatalf("xkcd:scrapeXkcd:fetch %v\n", fetchErr)
 		}
 
-		writeErr := util.Write(comic)
+		writeErr := Write(comic)
 
 		if (writeErr != nil) {
 			log.Fatalf("xkcd:scrapeXkcd:write %v\n", writeErr)

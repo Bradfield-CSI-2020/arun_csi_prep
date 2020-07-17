@@ -1,4 +1,4 @@
-package xkcdlib
+package index
 
 
 // Comic is the json representation of comic we get from xkcd

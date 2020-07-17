@@ -1,4 +1,4 @@
-package xkcdlib
+package db
 
 import (
 	"strings"
