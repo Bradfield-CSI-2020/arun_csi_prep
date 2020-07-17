@@ -25,12 +25,12 @@ func (q *Queue) Enqueue(item string) {
 // Dequeue returns from front of the queue
 func (q *Queue) Dequeue() (string, error) {
 
-	if (q.IsEmpty()) {
+	if q.IsEmpty() {
 		err := fmt.Errorf("queue is empty")
 		return "", err
 	}
 
-	item := (*q)[0] 
-	*q =  (*q)[1:]
+	item := (*q)[0]
+	*q = (*q)[1:]
 	return item, nil
 }

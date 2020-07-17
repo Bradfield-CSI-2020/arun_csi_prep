@@ -12,12 +12,12 @@ func (ol *OrderedList) Add(value int) {
 
 	prev := ol.Head
 
-	if (prev == nil) {
+	if prev == nil {
 		ol.Head = &node
 		return
 	}
 
-	if (prev.Value >= value) {
+	if prev.Value >= value {
 		node.Next = prev
 		ol.Head = &node
 		return
@@ -26,17 +26,17 @@ func (ol *OrderedList) Add(value int) {
 	for prev.Value < value {
 		cur := prev.Next
 
-		if (cur == nil) {
+		if cur == nil {
 			prev.Next = &node
 			return
 		}
 
-		if (cur.Value < value) {
+		if cur.Value < value {
 			prev = cur
 			continue
 		}
 
-		if (cur.Value > value) {
+		if cur.Value > value {
 			prev.Next = &node
 			node.Next = cur
 			return
@@ -52,11 +52,11 @@ func (ol *OrderedList) Search(value int) int {
 
 	for curNode != nil {
 
-		if (curNode.Value > value) {
+		if curNode.Value > value {
 			return -1
 		}
 
-		if (curNode.Value == value) {
+		if curNode.Value == value {
 			return count
 		}
 		curNode = curNode.Next
@@ -71,23 +71,23 @@ func (ol *OrderedList) Remove(value int) bool {
 
 	prev := ol.Head
 
-	if (prev == nil) {
+	if prev == nil {
 		return false
 	}
 
-	if (prev.Value == value) {
+	if prev.Value == value {
 		ol.Head = prev.Next
 		return true
 	}
 
-	if (prev.Value > value) {
+	if prev.Value > value {
 		return false
 	}
 
 	cur := prev.Next
 
 	for cur != nil {
-		if (cur.Value == value) {
+		if cur.Value == value {
 			prev.Next = cur.Next
 			return true
 		}

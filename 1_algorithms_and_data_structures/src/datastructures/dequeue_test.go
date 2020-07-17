@@ -9,46 +9,45 @@ import (
 func TestDequeue(t *testing.T) {
 	var newDeQueue datastructures.Dequeue
 
-	if (newDeQueue.IsEmpty() != true) {
+	if newDeQueue.IsEmpty() != true {
 		t.Error("expected true, but got ", newDeQueue.IsEmpty())
 	}
 
 	newDeQueue.Enqueue("Arun")
 
-	if (newDeQueue.IsEmpty() != false) {
+	if newDeQueue.IsEmpty() != false {
 		t.Error("expected false, but got ", newDeQueue.IsEmpty())
 	}
 
 	newDeQueue.Enqueue("Zack")
 
-	if (newDeQueue.Size() != 2) {
+	if newDeQueue.Size() != 2 {
 		t.Error("expected 2, but got ", newDeQueue.Size())
 	}
 
 	item, _ := newDeQueue.Dequeue()
 
-	if (item != "Arun") {
+	if item != "Arun" {
 		t.Error("expected Arun, but got ", item)
 	}
 
 	item, _ = newDeQueue.Dequeue()
 
-	if (item != "Zack") {
+	if item != "Zack" {
 		t.Error("expected Zack, but got ", item)
 	}
 
-	if (newDeQueue.IsEmpty() != true) {
+	if newDeQueue.IsEmpty() != true {
 		t.Error("expected true, but got ", newDeQueue.IsEmpty())
 	}
 
-	newDeQueue.EnqueueFront("ArunAgain")	
+	newDeQueue.EnqueueFront("ArunAgain")
 
 	newDeQueue.EnqueueFront("ZackAgain")
 
-
 	item, _ = newDeQueue.Dequeue()
 
-	if (item != "ZackAgain") {
+	if item != "ZackAgain" {
 		t.Error("expected ZackAgain, but got ", item)
 	}
 
@@ -56,28 +55,28 @@ func TestDequeue(t *testing.T) {
 
 	item, _ = newDeQueue.DequeueEnd()
 
-	if (item != "ArunAgain") {
+	if item != "ArunAgain" {
 		t.Error("expected ArunAgain, but got ", item)
 	}
 
 	item, _ = newDeQueue.DequeueEnd()
 
-	if (item != "ZackAgain") {
+	if item != "ZackAgain" {
 		t.Error("expected ZackAgain, but got ", item)
 	}
 
-	if (newDeQueue.Size() != 0) {
+	if newDeQueue.Size() != 0 {
 		t.Error("expected 0, but got ", newDeQueue.Size())
 	}
 
 	item, err := newDeQueue.DequeueEnd()
 
-	if (item != "") {
+	if item != "" {
 		t.Error("expected \"\", but got ", item)
 	}
 
-	if (err == nil) {
+	if err == nil {
 		t.Error("expected failure, but got ", err)
 	}
-	
+
 }

@@ -7,7 +7,7 @@ import (
 // ListNode is amazing
 type ListNode struct {
 	Value int
-	Next *ListNode
+	Next  *ListNode
 }
 
 // List is amazing
@@ -46,13 +46,13 @@ func (l *List) Size() int {
 
 // Search if an item is in the list
 func (l *List) Search(value int) int {
-	
+
 	curNode := l.Head
 
 	var count int
 
 	for curNode != nil {
-		if (curNode.Value == value) {
+		if curNode.Value == value {
 			return count
 		}
 		curNode = curNode.Next
@@ -67,11 +67,11 @@ func (l *List) Remove(value int) bool {
 
 	cur := l.Head
 
-	if (cur == nil) {
+	if cur == nil {
 		return false
 	}
 
-	if (cur.Value == value) {
+	if cur.Value == value {
 		l.Head = cur.Next
 		return true
 	}
@@ -80,7 +80,7 @@ func (l *List) Remove(value int) bool {
 	cur = cur.Next
 
 	for cur != nil {
-		if (cur.Value == value) {
+		if cur.Value == value {
 			prev.Next = cur.Next
 			return true
 		}
@@ -95,7 +95,7 @@ func (l *List) Remove(value int) bool {
 // Insert item at the provided
 func (l *List) Insert(value int, index int) bool {
 
-	if (index == 0) {
+	if index == 0 {
 		l.Add(value)
 		return true
 	}
@@ -108,7 +108,7 @@ func (l *List) Insert(value int, index int) bool {
 	count := 1
 
 	for cur != nil {
-		if (count == index) {		
+		if count == index {
 			fmt.Println("Adding")
 			node.Next = cur
 			prev.Next = &node
@@ -116,7 +116,7 @@ func (l *List) Insert(value int, index int) bool {
 		}
 		prev = cur
 		cur = prev.Next
-		count++	
+		count++
 	}
 
 	return false

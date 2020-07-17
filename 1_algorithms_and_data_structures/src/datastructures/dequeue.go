@@ -23,13 +23,13 @@ func (d *Dequeue) EnqueueFront(item string) {
 // DequeueEnd does something
 func (d *Dequeue) DequeueEnd() (string, error) {
 
-	if (d.Queue.IsEmpty()) {
+	if d.Queue.IsEmpty() {
 		err := fmt.Errorf("de-queue is empty")
 		return "", err
 	}
 
-	item := d.Queue[len(d.Queue) - 1]
-	d.Queue = d.Queue[:len(d.Queue) - 1]
+	item := d.Queue[len(d.Queue)-1]
+	d.Queue = d.Queue[:len(d.Queue)-1]
 
 	return item, nil
 }

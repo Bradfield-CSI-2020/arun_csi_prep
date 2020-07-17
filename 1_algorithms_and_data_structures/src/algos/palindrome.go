@@ -9,20 +9,20 @@ func IsPalindrome(word string) bool {
 
 	var dequeue datastructures.Dequeue
 
-	for _, value:= range word {
+	for _, value := range word {
 		dequeue.Enqueue(string(value))
 	}
 
 	for dequeue.Size() > 0 {
 
-		if (dequeue.Size() == 1) {
+		if dequeue.Size() == 1 {
 			return true
 		}
 
 		first, _ := dequeue.Dequeue()
 		second, _ := dequeue.DequeueEnd()
 
-		if (first != second) {
+		if first != second {
 			return false
 		}
 	}

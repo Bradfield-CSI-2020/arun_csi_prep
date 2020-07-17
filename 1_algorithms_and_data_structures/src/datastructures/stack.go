@@ -20,7 +20,7 @@ func (s *Stack) Push(item string) {
 
 // Pop returns from the top of the stack
 func (s *Stack) Pop() string {
-	item := (*s)[len(*s) - 1] 
-	*s =  (*s)[:(len(*s) - 1)]
+	item := (*s)[len(*s)-1]
+	*s = (*s)[:(len(*s) - 1)]
 	return item
 }

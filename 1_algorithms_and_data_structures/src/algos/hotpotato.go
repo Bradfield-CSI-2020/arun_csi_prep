@@ -17,14 +17,14 @@ func Hotpotato(names []string, num int) string {
 
 	for newQueue.Size() > 1 {
 
-		for i:= 0; i < num; i++ {
+		for i := 0; i < num; i++ {
 			name, _ := newQueue.Dequeue()
 			newQueue.Enqueue(name)
 		}
 
 		_, err := newQueue.Dequeue() // dead
 
-		if (err != nil) {
+		if err != nil {
 			log.Fatalf("Hotpotato: %v\n", err)
 		}
 	}

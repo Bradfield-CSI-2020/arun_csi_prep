@@ -24,11 +24,11 @@ func CheckbalancedParans(parans string) bool {
 	for _, vRune := range parans {
 		value := string(vRune)
 
-		if (frontParansMap[value] != "") {
+		if frontParansMap[value] != "" {
 			paranStack.Push(value)
-		} else if (reverseParansMap[value] != "") {
+		} else if reverseParansMap[value] != "" {
 			openParan := paranStack.Pop()
-			if (openParan != reverseParansMap[value]) {
+			if openParan != reverseParansMap[value] {
 				return false
 			}
 		}

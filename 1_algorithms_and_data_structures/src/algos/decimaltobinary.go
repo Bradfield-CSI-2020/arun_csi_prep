@@ -24,7 +24,7 @@ func DecimalToBinary(decimalNum int) string {
 		binaryRep = binaryRep + reminderStack.Pop()
 	}
 
-	if (binaryRep == "") {
+	if binaryRep == "" {
 		return "0"
 	}
 

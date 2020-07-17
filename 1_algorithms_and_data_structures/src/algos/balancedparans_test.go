@@ -9,25 +9,25 @@ import (
 func TestCheckbalancedParans(t *testing.T) {
 	v := algos.CheckbalancedParans("{{}}")
 
-	if (v != true) {
+	if v != true {
 		t.Error("Expected true, got", v)
 	}
 
 	v = algos.CheckbalancedParans("[[[]]][")
 
-	if (v != false) {
+	if v != false {
 		t.Error("Expected false, got", v)
 	}
-	
+
 	v = algos.CheckbalancedParans("[[{{(())}}]]")
 
-	if (v != true) {
+	if v != true {
 		t.Error("Expected true, got", v)
 	}
 
 	v = algos.CheckbalancedParans("[[{{((())}}]]")
 
-	if (v != false) {
+	if v != false {
 		t.Error("Expected false, got", v)
 	}
 }
