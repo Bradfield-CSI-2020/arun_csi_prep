@@ -57,7 +57,12 @@ func BuildInvertedIndex() (map[string]*InvertedIndexEntry, error) {
 		// for each string entry, add to invertedIndex
 		// profit
 		comicLine := Comic{}
-		json.Unmarshal([]byte(line), &comicLine)
+		err := json.Unmarshal([]byte(line), &comicLine)
+
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "buildIndex:marshal %v\n", err)
+			return nil, err
+		}
 		
 		// todo: account for searchterms being substrings of fields
 		titleFields := strings.Fields(comicLine.SafeTitle)
