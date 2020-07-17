@@ -14,17 +14,17 @@ import (
 	"strings"
 	"io/ioutil"
 	"strconv"
-	"time"
 	"encoding/json"
 	"log"
 	"bufio"
-	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/fetch"
+	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/xkcdlib"
+	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/index"
 )
 
 func main() {
 	arg := parseArgs()
 	if arg == "--index" {
-		scrapeXkcd()
+		xkcdlib.Scrape()
 		os.Exit(0)
 	} 
 
@@ -51,7 +51,7 @@ func main() {
 }
 
 
-func printComic(value comic) {
+func printComic(value xkcdlib.Comic) {
 	// url should look like this -> https://xkcd.com/1/
 	url := "https://xkcd.com/" + strconv.Itoa(value.Num)
 	fmt.Println("-------------------------------------")
@@ -63,7 +63,7 @@ func printComic(value comic) {
 }
 
 // not used, keeping for future benchmarking
-func printHits(searchTerm string, searchIndex map[int]comic) {
+func printHits(searchTerm string, searchIndex map[int]xkcdlib.Comic) {
 	count := 0
 	for _, value := range searchIndex {
 		safeTitleHits := strings.Contains(strings.ToLower(value.SafeTitle), strings.ToLower(searchTerm))
@@ -81,7 +81,7 @@ func printHits(searchTerm string, searchIndex map[int]comic) {
 // 'space' will match 'Space', 'spAce', 'SPACE' --
 // -- but will not match 'Myspace'
 // todo: match substrings too
-func testInvertedIndex(searchTerm string, invertedIndex map[string]*invertedIndexEntry) {
+func testInvertedIndex(searchTerm string, invertedIndex map[string]*index.InvertedIndexEntry) {
 	hits := invertedIndex[strings.ToLower(searchTerm)]
 	if (hits == nil) {
 		fmt.Println("no hits !!")
@@ -106,78 +106,7 @@ func parseArgs() string {
 	return strings.TrimSpace(os.Args[1])
 }
 
-func scrapeXkcd() {
-	for i := 1; i <= 2328; i++ {
-		// comic number 404 does not exist
-		if (i != 404) {
-			continue
-		}
-		
-		time.Sleep(100 * time.Millisecond)
-
-		comic, fetchErr := fetch.Fetch(strconv.Itoa(i))
-
-		if (fetchErr != nil) {
-			log.Fatalf("xkcd:scrapeXkcd:fetch %v\n", fetchErr)
-		}
-
-		writeErr := write(comic)
-
-		if (writeErr != nil) {
-			log.Fatalf("xkcd:scrapeXkcd:write %v\n", writeErr)
-		}
-	}
-}
-
-// func fetch(num string) (string, error) {
-// 	slice := [3] string {"https://xkcd.com/", num, "/info.0.json"}
-// 	url := strings.Join(slice[0:], "")
-
-// 	resp, reqError := http.Get(url)
-
-// 	if (reqError != nil) {
-// 		return "", reqError
-// 	}
-
-// 	body, readErr := ioutil.ReadAll(resp.Body)
-
-// 	resp.Body.Close()
-
-// 	if (readErr != nil) {
-// 		return "", readErr
-// 	}
-
-// 	return string(body), nil
-// }
-
-func write(line string) error {
-	fileName := "db.jsonl"
-	file, openErr := os.OpenFile(fileName, os.O_WRONLY|os.O_APPEND, os.ModeAppend)
-	
-	if openErr != nil {
-		fmt.Fprintf(os.Stderr, "xkcd:write:open %v\n", openErr)
-		newFile, err := os.Create("./db.jsonl")
-
-		if (err != nil) {
-			return err
-		}
-
-		file = newFile
-	}
-
-	_, writeErr := file.WriteString(line + "\n")
-	
-	if writeErr != nil {
-		fmt.Fprintf(os.Stderr, "xkcd:write:write %v\n", writeErr)
-		return writeErr
-	}
-
-	syncErr := file.Sync()
-
-	return syncErr
-}
-
-func buildIndex() (map[int]comic, error) {
+func buildIndex() (map[int]xkcdlib.Comic, error) {
 	fileName := "db.jsonl"
 
 	data, err := ioutil.ReadFile(fileName)
@@ -187,12 +116,12 @@ func buildIndex() (map[int]comic, error) {
 		return nil, err
 	}
 
-	var index = make(map[int]comic)
+	var index = make(map[int]xkcdlib.Comic)
 
 	lineCount := 0
 	for _, line:= range strings.Split(string(data), "\n") {
 		lineCount++
-		comicLine := comic{}
+		comicLine := xkcdlib.Comic{}
 		json.Unmarshal([]byte(line), &comicLine)
 		index[comicLine.Num] = comicLine
 	}
@@ -200,7 +129,7 @@ func buildIndex() (map[int]comic, error) {
 	return index, nil
 }
 
-func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
+func buildInvertedIndex() (map[string]*index.InvertedIndexEntry, error) {
 	fileName := "db.jsonl"
 
 	data, err := ioutil.ReadFile(fileName)
@@ -210,7 +139,7 @@ func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
 		return nil, err
 	}
 
-	var invertedIndex = make(map[string]*invertedIndexEntry)
+	var invertedIndex = make(map[string]*index.InvertedIndexEntry)
 
 	for _, line:= range strings.Split(string(data), "\n") {
 		// line is a document
@@ -218,7 +147,7 @@ func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
 		// lower case, split at whitespace,
 		// for each string entry, add to invertedIndex
 		// profit
-		comicLine := comic{}
+		comicLine := xkcdlib.Comic{}
 		json.Unmarshal([]byte(line), &comicLine)
 		
 		// todo: account for searchterms being substrings of fields
@@ -228,47 +157,22 @@ func buildInvertedIndex() (map[string]*invertedIndexEntry, error) {
 		combinedList := append(titleFields, transcriptFields...)
 
 		for _, value := range combinedList {
-			// entry := invertedIndexEntry{""}
 			searchValue := strings.ToLower(value)
 			existingEntry := invertedIndex[searchValue]
 
 			if (existingEntry == nil) {
-				entry := invertedIndexEntry{}
+				entry := index.InvertedIndexEntry{}
 				entry.SearchTerm = searchValue
-				entry.Comics = make(map[int]comic)
+				entry.Comics = make(map[int]xkcdlib.Comic)
 				entry.Comics[comicLine.Num] = comicLine
 				entry.Frequency = 1
 				invertedIndex[searchValue] = &entry
 			} else {
 				existingEntry.Frequency++
 				existingEntry.Comics[comicLine.Num] = comicLine
-				// no need to update invertedIndex, as we update the entry directly
 			}
 		}
 	}
 
 	return invertedIndex, nil
-}
-
-type invertedIndexEntry struct {
-	SearchTerm string
-	Frequency int
-	Comics map[int]comic
-}
-type invertedIndex struct {
-	HashMap map[string]*invertedIndexEntry
-}
-
-type comic struct {
-	Month string `json:"month"`
-	Num int `json:"num"`
-	Day string `json:"day"`
-	Link string `json:"link"`
-	Year string `json:"year"`
-	News string `json:"news"`
-	SafeTitle string `json:"safe_title"`
-	Transcript string `json:"transcript"`
-	Alt string `json:"alt"`
-	Img string `json:"img"`
-	Title string `json:"title"`
 }
