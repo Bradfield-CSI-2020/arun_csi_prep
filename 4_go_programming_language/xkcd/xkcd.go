@@ -13,12 +13,12 @@ import (
 	"os"
 	"strings"
 	"io/ioutil"
-	"net/http"
 	"strconv"
 	"time"
 	"encoding/json"
 	"log"
 	"bufio"
+	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/fetch"
 )
 
 func main() {
@@ -115,7 +115,7 @@ func scrapeXkcd() {
 		
 		time.Sleep(100 * time.Millisecond)
 
-		comic, fetchErr := fetch(strconv.Itoa(i))
+		comic, fetchErr := fetch.Fetch(strconv.Itoa(i))
 
 		if (fetchErr != nil) {
 			log.Fatalf("xkcd:scrapeXkcd:fetch %v\n", fetchErr)
@@ -129,26 +129,26 @@ func scrapeXkcd() {
 	}
 }
 
-func fetch(num string) (string, error) {
-	slice := [3] string {"https://xkcd.com/", num, "/info.0.json"}
-	url := strings.Join(slice[0:], "")
+// func fetch(num string) (string, error) {
+// 	slice := [3] string {"https://xkcd.com/", num, "/info.0.json"}
+// 	url := strings.Join(slice[0:], "")
 
-	resp, reqError := http.Get(url)
+// 	resp, reqError := http.Get(url)
 
-	if (reqError != nil) {
-		return "", reqError
-	}
+// 	if (reqError != nil) {
+// 		return "", reqError
+// 	}
 
-	body, readErr := ioutil.ReadAll(resp.Body)
+// 	body, readErr := ioutil.ReadAll(resp.Body)
 
-	resp.Body.Close()
+// 	resp.Body.Close()
 
-	if (readErr != nil) {
-		return "", readErr
-	}
+// 	if (readErr != nil) {
+// 		return "", readErr
+// 	}
 
-	return string(body), nil
-}
+// 	return string(body), nil
+// }
 
 func write(line string) error {
 	fileName := "db.jsonl"
