@@ -10,5 +10,4 @@ func NumberToAnyBase(num int, base int) string {
 	}
 
 	return NumberToAnyBase(num/base, base) + string(charIntMap[num%base])
-
 }
