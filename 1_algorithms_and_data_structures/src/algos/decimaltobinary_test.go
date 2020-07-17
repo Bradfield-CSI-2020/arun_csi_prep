@@ -1,25 +1,23 @@
-package algos_test
+package algos
 
 import (
 	"testing"
-
-	"algos"
 )
 
 func TestDecimalToBinary(t *testing.T) {
-	v := algos.DecimalToBinary(233)
+	v := DecimalToBinary(233)
 
 	if v != "11101001" {
 		t.Error("Expected 11101001, got", v)
 	}
 
-	v = algos.DecimalToBinary(0)
+	v = DecimalToBinary(0)
 
 	if v != "0" {
 		t.Error("Expected 0, got", v)
 	}
 
-	v = algos.DecimalToBinary(42)
+	v = DecimalToBinary(42)
 
 	if v != "101010" {
 		t.Error("Expected 101010, got", v)

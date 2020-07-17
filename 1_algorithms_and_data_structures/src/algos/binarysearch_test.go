@@ -1,28 +1,26 @@
-package algos_test
+package algos
 
 import (
 	"testing"
-
-	"algos"
 )
 
 func TestBinarySearch(t *testing.T) {
 
 	newList := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-	found := algos.BinarySearch(newList, 10)
+	found := BinarySearch(newList, 10)
 
 	if found != -1 {
 		t.Error("expected -1, got ", found)
 	}
 
-	found = algos.BinarySearch(newList, 2)
+	found = BinarySearch(newList, 2)
 
 	if found != 1 {
 		t.Error("expected 1, got ", found)
 	}
 
-	found = algos.BinarySearch(newList, -1)
+	found = BinarySearch(newList, -1)
 
 	if found != -1 {
 		t.Error("expected -1, got ", found)
@@ -30,7 +28,7 @@ func TestBinarySearch(t *testing.T) {
 
 	anotherNewList := []int{}
 
-	found = algos.BinarySearch(anotherNewList, 1)
+	found = BinarySearch(anotherNewList, 1)
 
 	if found != -1 {
 		t.Error("expected -1, got ", found)

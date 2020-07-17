@@ -1,13 +1,11 @@
-package datastructures_test
+package datastructures
 
 import (
 	"testing"
-
-	"datastructures"
 )
 
 func TestDequeue(t *testing.T) {
-	var newDeQueue datastructures.Dequeue
+	var newDeQueue Dequeue
 
 	if newDeQueue.IsEmpty() != true {
 		t.Error("expected true, but got ", newDeQueue.IsEmpty())

@@ -1,21 +1,19 @@
-package algos_test
+package algos
 
 import (
 	"sort"
 	"strings"
 	"testing"
-
-	"algos"
 )
 
 func TestAnagramCheck(t *testing.T) {
-	v := algos.AnagramCheck("hello", "helol")
+	v := AnagramCheck("hello", "helol")
 
 	if v != true {
 		t.Error("Expected true, got", v)
 	}
 
-	v = algos.AnagramCheck("bye", "Hello")
+	v = AnagramCheck("bye", "Hello")
 
 	if v != false {
 		t.Error("Expected false, got", v)
@@ -28,7 +26,7 @@ func TestAnagramCheck(t *testing.T) {
 
 	newWord := strings.Join(wordArray, "")
 
-	v = algos.AnagramCheck(firstWord, newWord)
+	v = AnagramCheck(firstWord, newWord)
 
 	if v != true {
 		t.Error("Expected true, got", v)

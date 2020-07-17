@@ -1,14 +1,12 @@
-package datastructures_test
+package datastructures
 
 import (
 	"testing"
-
-	"datastructures"
 )
 
 func TestListNode(t *testing.T) {
 
-	var newList datastructures.List
+	var newList List
 
 	isEmpty := newList.IsEmpty()
 

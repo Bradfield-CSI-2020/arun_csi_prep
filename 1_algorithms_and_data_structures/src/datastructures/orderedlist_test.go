@@ -1,14 +1,12 @@
-package datastructures_test
+package datastructures
 
 import (
 	"testing"
-
-	"datastructures"
 )
 
 func TestOrderedList(t *testing.T) {
 
-	var newList datastructures.OrderedList
+	var newList OrderedList
 
 	isEmpty := newList.IsEmpty()
 

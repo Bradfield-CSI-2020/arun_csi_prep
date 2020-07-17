@@ -1,16 +1,14 @@
-package algos_test
+package algos
 
 import (
 	"testing"
-
-	"algos"
 )
 
 func TestIsPalindrome(t *testing.T) {
 
 	word := "asdffdsa"
 
-	v := algos.IsPalindrome(word)
+	v := IsPalindrome(word)
 
 	if v != true {
 		t.Error("expected true, but got ", v)
@@ -18,14 +16,14 @@ func TestIsPalindrome(t *testing.T) {
 
 	word = "asdffdsas"
 
-	v = algos.IsPalindrome(word)
+	v = IsPalindrome(word)
 
 	if v != false {
 		t.Error("expected false, but got ", v)
 	}
 
 	word = "asdfffdsa"
-	v = algos.IsPalindrome(word)
+	v = IsPalindrome(word)
 
 	if v != true {
 		t.Error("expected true, but got ", v)

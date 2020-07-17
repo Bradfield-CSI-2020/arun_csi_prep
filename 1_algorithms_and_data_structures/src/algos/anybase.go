@@ -1,9 +1,5 @@
 package algos
 
-// import (
-// 	"fmt"
-// )
-
 const charIntMap = "0123456789abcdef"
 
 // NumberToAnyBase converts a base decimal number to anybase string representation

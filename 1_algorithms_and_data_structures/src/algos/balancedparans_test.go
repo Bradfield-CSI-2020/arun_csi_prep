@@ -1,31 +1,29 @@
-package algos_test
+package algos
 
 import (
 	"testing"
-
-	"algos"
 )
 
 func TestCheckbalancedParans(t *testing.T) {
-	v := algos.CheckbalancedParans("{{}}")
+	v := CheckbalancedParans("{{}}")
 
 	if v != true {
 		t.Error("Expected true, got", v)
 	}
 
-	v = algos.CheckbalancedParans("[[[]]][")
+	v = CheckbalancedParans("[[[]]][")
 
 	if v != false {
 		t.Error("Expected false, got", v)
 	}
 
-	v = algos.CheckbalancedParans("[[{{(())}}]]")
+	v = CheckbalancedParans("[[{{(())}}]]")
 
 	if v != true {
 		t.Error("Expected true, got", v)
 	}
 
-	v = algos.CheckbalancedParans("[[{{((())}}]]")
+	v = CheckbalancedParans("[[{{((())}}]]")
 
 	if v != false {
 		t.Error("Expected false, got", v)

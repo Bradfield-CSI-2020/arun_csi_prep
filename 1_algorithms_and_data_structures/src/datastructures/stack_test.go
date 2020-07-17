@@ -1,13 +1,11 @@
-package datastructures_test
+package datastructures
 
 import (
 	"testing"
-
-	"datastructures"
 )
 
 func TestStack(t *testing.T) {
-	var newStack datastructures.Stack
+	var newStack Stack
 
 	if newStack.IsEmpty() != true {
 		t.Error("expected true, but got ", newStack.IsEmpty())
