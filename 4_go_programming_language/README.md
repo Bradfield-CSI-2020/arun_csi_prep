@@ -1,9 +1,8 @@
 # The GO Programming Language
 
-## TODO:
-- [ ] Move code into packages, index, scrape etc
+### TODO:
+- [ ] auto init index on launch
 - [ ] Write tests
-
 
 ## Getting Started
 
@@ -36,7 +35,6 @@ bin/xkcd space
 ```
 bin/xkcd "space elevators"
 ```
-
 
 ### Open Repl
 
