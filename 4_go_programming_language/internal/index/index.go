@@ -1,11 +1,11 @@
 package index
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
-	"io/ioutil"
-	"encoding/json"
 )
 
 // BuildIndex by reading the db file line by line
@@ -22,11 +22,11 @@ func BuildIndex() (map[int]Comic, error) {
 	var index = make(map[int]Comic)
 
 	lineCount := 0
-	for _, line:= range strings.Split(string(data), "\n") {
+	for _, line := range strings.Split(string(data), "\n") {
 		lineCount++
 		comicLine := Comic{}
 		err := json.Unmarshal([]byte(line), &comicLine)
-		
+
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "buildIndex:marshal %v\n", err)
 			return nil, err
@@ -50,7 +50,7 @@ func BuildInvertedIndex() (map[string]*InvertedIndexEntry, error) {
 
 	var invertedIndex = make(map[string]*InvertedIndexEntry)
 
-	for _, line:= range strings.Split(string(data), "\n") {
+	for _, line := range strings.Split(string(data), "\n") {
 		// line is a document
 		// go over `safe_title` and `transcript`,
 		// lower case, split at whitespace,
@@ -63,7 +63,7 @@ func BuildInvertedIndex() (map[string]*InvertedIndexEntry, error) {
 			fmt.Fprintf(os.Stderr, "buildIndex:marshal %v\n", err)
 			return nil, err
 		}
-		
+
 		// todo: account for searchterms being substrings of fields
 		titleFields := strings.Fields(comicLine.SafeTitle)
 		transcriptFields := strings.Fields(comicLine.Transcript)
@@ -74,7 +74,7 @@ func BuildInvertedIndex() (map[string]*InvertedIndexEntry, error) {
 			searchValue := strings.ToLower(value)
 			existingEntry := invertedIndex[searchValue]
 
-			if (existingEntry == nil) {
+			if existingEntry == nil {
 				entry := InvertedIndexEntry{}
 				entry.SearchTerm = searchValue
 				entry.Comics = make(map[int]Comic)
