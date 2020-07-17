@@ -18,7 +18,7 @@ import (
 	"log"
 	"bufio"
 	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/xkcdlib"
-	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/index"
+	"github.com/Bradfield-CSI-2020/arun_csi_prep/4_go_programming_language/ds"
 )
 
 func main() {
@@ -81,7 +81,7 @@ func printHits(searchTerm string, searchIndex map[int]xkcdlib.Comic) {
 // 'space' will match 'Space', 'spAce', 'SPACE' --
 // -- but will not match 'Myspace'
 // todo: match substrings too
-func testInvertedIndex(searchTerm string, invertedIndex map[string]*index.InvertedIndexEntry) {
+func testInvertedIndex(searchTerm string, invertedIndex map[string]*ds.InvertedIndexEntry) {
 	hits := invertedIndex[strings.ToLower(searchTerm)]
 	if (hits == nil) {
 		fmt.Println("no hits !!")
@@ -129,7 +129,7 @@ func buildIndex() (map[int]xkcdlib.Comic, error) {
 	return index, nil
 }
 
-func buildInvertedIndex() (map[string]*index.InvertedIndexEntry, error) {
+func buildInvertedIndex() (map[string]*ds.InvertedIndexEntry, error) {
 	fileName := "db.jsonl"
 
 	data, err := ioutil.ReadFile(fileName)
@@ -139,7 +139,7 @@ func buildInvertedIndex() (map[string]*index.InvertedIndexEntry, error) {
 		return nil, err
 	}
 
-	var invertedIndex = make(map[string]*index.InvertedIndexEntry)
+	var invertedIndex = make(map[string]*ds.InvertedIndexEntry)
 
 	for _, line:= range strings.Split(string(data), "\n") {
 		// line is a document
@@ -161,7 +161,7 @@ func buildInvertedIndex() (map[string]*index.InvertedIndexEntry, error) {
 			existingEntry := invertedIndex[searchValue]
 
 			if (existingEntry == nil) {
-				entry := index.InvertedIndexEntry{}
+				entry := ds.InvertedIndexEntry{}
 				entry.SearchTerm = searchValue
 				entry.Comics = make(map[int]xkcdlib.Comic)
 				entry.Comics[comicLine.Num] = comicLine
