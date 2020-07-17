@@ -49,6 +49,8 @@ if [ $# -eq 2 ]
     # todo: use global substitution to replace spaces
     # | gsub(" "; "_")
     
+    # todo: the history subsection for walmart takes a long time...why?
+
     for i in "${!sections[@]}"; do
       if [[ "${sections[$i]}" = "${section_title}" ]]; then
         index=$((i+1))
@@ -63,11 +65,11 @@ if [ $# -eq 2 ]
         echo "${detail//\\}" | \
         gsed -n 's:.*<p>\(.*\)</p>.*:\1:p' | \
         gsed -e 's/<[^>]*>//g' | \
-        lynx -stdin -dump
+        # lynx -stdin -dump
         # or use the following
-        # sed 's/&#160;//g' | \
-        # sed 's/&#91;//g' | \
-        # sed 's/2&#93;//g'
+        gsed 's/&#160;//g' | \
+        gsed 's/&#91;//g' | \
+        gsed 's/2&#93;//g'
       fi
     done
 
