@@ -1,13 +1,21 @@
-# Golang CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-go/ for more details
-version: 2
-jobs:
-  build:
+version: 2.1
+
+executors:
+  go-executor:
     docker:
       - image: circleci/golang:1.14
+
+jobs:
+  build:
+    executor: go-executor
     working_directory: ~/repo
     steps:
       - checkout
       - run: cd 1_algorithms_and_data_structures/src && go get -v -t -d ./...
       - run: cd 1_algorithms_and_data_structures/src && go test -v ./...
+
+workflows:
+  version: 2
+  build_algos:
+    jobs:
+      - build
