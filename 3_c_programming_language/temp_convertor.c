@@ -7,7 +7,7 @@
 float fhrToCelsius(float f);
 
 int main() {
-  for (float fahr = 0.0; fahr <= 300; fahr = fahr + 20) {
+  for (float fahr = LOWER; fahr <= UPPER; fahr = fahr + STEP) {
     printf("%3.0f %6.1f\n", fahr, fhrToCelsius(fahr));
   }
 }
