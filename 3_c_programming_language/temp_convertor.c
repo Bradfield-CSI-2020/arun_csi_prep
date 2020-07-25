@@ -1,8 +1,8 @@
 # include <stdio.h>
 
-#define LOWER 0
-#define UPPER 300 
-#define STEP 20
+#define LOWER 0     /* lower limit of temp */
+#define UPPER 300   /* upper limit of temp */
+#define STEP 20     /* step size */
 
 int main() {
     float fahr, celsius;
