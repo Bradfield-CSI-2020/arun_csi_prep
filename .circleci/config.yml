@@ -1,0 +1,31 @@
+version: 2.1
+
+executors:
+  go-executor:
+    docker:
+      - image: circleci/golang:1.14
+
+jobs:
+  lint-fmt-test:
+    executor: go-executor
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: 
+          name: go fmt
+          command: cd 1_algorithms_and_data_structures/src && test -z $(go fmt ./...)
+      # - run: 
+      #     name: golangci-lint
+      #     command: cd 1_algorithms_and_data_structures/src && golangci-lint run
+      - run: 
+          name: go get
+          command: cd 1_algorithms_and_data_structures/src && go get -v -t -d ./...
+      - run:
+          name: go test
+          command: cd 1_algorithms_and_data_structures/src && go test -v ./...
+
+workflows:
+  version: 2
+  build_algos:
+    jobs:
+      - lint-fmt-test
