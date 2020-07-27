@@ -23,7 +23,7 @@ int main() {
   }
 
   if (max > 0) {
-    printf("Length of longest line: \n");
+    printf("\nLength of longest line: \n");
     printf("%d\n", max);
     printf("Longest line: \n");
     printf("%s\n", longest);
