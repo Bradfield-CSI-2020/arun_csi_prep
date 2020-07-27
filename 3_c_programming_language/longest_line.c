@@ -42,13 +42,11 @@ int getLine(char s[], int lim) {
     }
   }
 
-  // overwrite the last stored character with newline
   if (c == '\n') {
     s[lim - 2] = c;
     ++i;
   }
 
-  // terminate string
   s[lim - 1] = '\0';
   return i;
 }
