@@ -22,19 +22,18 @@ func (l *List) IsEmpty() bool {
 
 // Add item to the head of the List
 func (l *List) Add(value int) {
-	var node ListNode
-	node.Value = value
-	curHead := l.Head
-	node.Next = curHead
-	l.Head = &node
+	node := &ListNode{
+		Value: value,
+		Next:  l.Head,
+	}
+	l.Head = node
 }
 
 // Size returns the size of the list
 func (l *List) Size() int {
 
 	curNode := l.Head
-
-	var count int
+	count := 0
 
 	for curNode != nil {
 		count++
@@ -48,8 +47,7 @@ func (l *List) Size() int {
 func (l *List) Search(value int) int {
 
 	curNode := l.Head
-
-	var count int
+	count := 0
 
 	for curNode != nil {
 		if curNode.Value == value {
@@ -76,16 +74,11 @@ func (l *List) Remove(value int) bool {
 		return true
 	}
 
-	prev := cur
-	cur = cur.Next
-
-	for cur != nil {
-		if cur.Value == value {
-			prev.Next = cur.Next
+	for cur.Next != nil {
+		if cur.Next.Value == value {
+			cur.Next = cur.Next.Next
 			return true
 		}
-
-		prev = cur
 		cur = cur.Next
 	}
 
