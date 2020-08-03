@@ -20,16 +20,17 @@ func TestGenericList(t *testing.T) {
 		t.Error("expected size to be 0, got ", size)
 	}
 
-	removed := newList.Remove(5)
+	removed := newList.Remove("")
 
 	if removed != false {
 		t.Error("expected false, got ", removed)
 	}
 
-	items := []int{1, 2, 3, 4, 5}
+	values := []int{1, 2, 3, 4, 5}
+	keys := []string{"a", "b", "c", "d", "e"}
 
-	for _, value := range items {
-		newList.Append(value)
+	for index, key := range keys {
+		newList.Append(key, values[index])
 	}
 
 	size = newList.Size()
@@ -38,22 +39,34 @@ func TestGenericList(t *testing.T) {
 		t.Error("expected size to be 5, got ", size)
 	}
 
-	removed = newList.Remove(4)
+	removed = newList.Remove("d")
 
 	if removed != true {
 		t.Error("expected true, got ", removed)
 	}
 
-	removed = newList.Remove(5)
+	removed = newList.Remove("e")
 
 	if removed != true {
 		t.Error("expected true, got ", removed)
 	}
 
-	removed = newList.Remove(5)
+	removed = newList.Remove("e")
 
 	if removed != false {
 		t.Error("expected false, got ", removed)
+	}
+
+	got := newList.Get("a")
+
+	if got != 1 {
+		t.Error("expected 1, got ", got)
+	}
+
+	got = newList.Get("e")
+
+	if got != nil {
+		t.Error("expected nil, got ", got)
 	}
 
 }
