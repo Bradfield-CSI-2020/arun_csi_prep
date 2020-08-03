@@ -5,13 +5,23 @@ import "testing"
 func TestHashTable(t *testing.T) {
 	var newHashTable HashTable
 
+	got := newHashTable.Get("a")
+
+	if got != nil {
+		t.Error("expected nil, got ", got)
+	}
+
 	doneSet := newHashTable.Set("a", 1)
 
 	if doneSet != true {
 		t.Error("expected true, got ", doneSet)
 	}
 
-	got := newHashTable.Get("a")
+	got = newHashTable.Get("a")
+
+	if got != 1 {
+		t.Error("expected 1, got ", got)
+	}
 
 	newHashTable.Set("b", 2)
 	newHashTable.Set("c", 3)
