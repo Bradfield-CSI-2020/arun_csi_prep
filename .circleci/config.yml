@@ -13,16 +13,16 @@ jobs:
       - checkout
       - run: 
           name: go fmt
-          command: cd 1_algorithms_and_data_structures/src && test -z $(go fmt ./...)
+          command: cd 1_algorithms_and_data_structures && test -z $(go fmt ./...)
       # - run: 
       #     name: golangci-lint
       #     command: cd 1_algorithms_and_data_structures/src && golangci-lint run
       - run: 
           name: go get
-          command: cd 1_algorithms_and_data_structures/src && go get -v -t -d ./...
+          command: cd 1_algorithms_and_data_structures && go get -v -t -d ./...
       - run:
           name: go test
-          command: cd 1_algorithms_and_data_structures/src && go test -v ./...
+          command: cd 1_algorithms_and_data_structures && go test -v ./...
 
 workflows:
   version: 2
