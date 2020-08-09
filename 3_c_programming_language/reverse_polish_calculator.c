@@ -8,6 +8,7 @@ int getop(char[]);
 void push(double);
 double pop(void);
 
+// not sure whats happening
 int main() {
 
   int type;
